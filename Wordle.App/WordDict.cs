@@ -4,6 +4,17 @@ namespace Wordle.App
 {
     public class WordDict
     {
+        private static WordDict? _instance;
+        public static WordDict Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new WordDict(0);
+
+                return _instance;
+            }
+        }
         private string[] _words = 
         [
             "абрис",
@@ -59,17 +70,14 @@ namespace Wordle.App
         ];
         private Random _randomizer;
         public ReadOnlyCollection<string> Words { get { return _words.AsReadOnly(); } }
-        public WordDict(int seed)
+        private WordDict(int seed)
         {
             _randomizer = new Random(seed);
         }
-        /*public string Pick(int index)
+        public static void Init(int seed)
         {
-            if (index < 0 || index >= _words.Length)
-                return "";
-
-            return _words[index]; 
-        }*/
+            _instance = new WordDict(seed);
+        }
         public string Pick()
         {
             return _words[_randomizer.Next(_words.Length)];

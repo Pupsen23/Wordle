@@ -7,6 +7,17 @@ namespace Wordle.App
         public static readonly string STATUS_IN_PROGRESS = "IN_PROGRESS";
         public static readonly string STATUS_WIN = "WIN";
         public static readonly string STATUS_LOSE = "LOSE";
+        private static GameSession? _instance;
+        public static GameSession Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new GameSession("word", 1);
+
+                return _instance;
+            }
+        }
         private string _word = "";
         private uint _attemptsMax;
         private uint _attempts;
@@ -31,10 +42,15 @@ namespace Wordle.App
         public uint Attempts { get { return _attempts; } }
         public string Status { get { return _status; } }
         public ReadOnlyCollection<string> History { get { return _history.AsReadOnly(); } }
-        public GameSession(string word, uint attemptsMax)
+        private GameSession(string word, uint attemptsMax)
         {
             _word = word;
             _attemptsMax = attemptsMax;
+            _status = STATUS_IN_PROGRESS;
+        }
+        public static void Init(string word, uint attemptsMax)
+        {
+            _instance = new GameSession(word, attemptsMax);
         }
         private void ReStart()
         {
@@ -45,8 +61,8 @@ namespace Wordle.App
         }
         public bool Guess(string word)
         {
-            if (!IsValid())
-                throw new Exception($"Attempts ({Attempts}) >= AttemptsMax ({AttemptsMax})");
+            if (!IsPlayable())
+                throw new Exception($"Attempts ({Attempts}) >= AttemptsMax ({AttemptsMax}); Status: {Status}");
 
             if (word.Equals(Word))
             {
@@ -58,9 +74,9 @@ namespace Wordle.App
             _history.Add(word);
             return false;
         }
-        public bool IsValid()
+        public bool IsPlayable()
         {
-            return Status == STATUS_IN_PROGRESS && Attempts < AttemptsMax;
+            return Status.Equals(STATUS_IN_PROGRESS) && Attempts < AttemptsMax;
         }
     }
 }
