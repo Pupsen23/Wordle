@@ -4,83 +4,58 @@ namespace Wordle.App
 {
     public class WordDict
     {
-        private static WordDict? _instance;
-        public static WordDict Instance
+        private List<string> _words;
+        private uint _wordLength;
+        public ReadOnlyCollection<string> Words
         {
-            get
+            get { return _words.AsReadOnly(); }
+            set
             {
-                if (_instance == null)
-                    _instance = new WordDict(0);
+                if (value.Count == 0)
+                    throw new Exception("Words length must be > 0.");
 
-                return _instance;
+                uint wordLength = (uint) value.ElementAt(0).Length;
+
+                for (int i = 1; i < value.Count; i++)
+                {
+                    if (CheckWordLength(value.ElementAt(i), wordLength))
+                        throw new Exception($"Not consistent word length, index: {i}.");
+                }
+
+                _words = value.ToList();
+                _wordLength = wordLength;
             }
         }
-        private string[] _words = 
-        [
-            "абрис",
-            "авеню",
-            "агава",
-            "агент",
-            "адрес",
-            "азарт",
-            "актер",
-            "аллея",
-            "алмаз",
-            "ампер",
-            "ангел",
-            "анонс",
-            "арбуз",
-            "архив",
-            "аскет",
-            "атлас",
-            "афиша",
-            "багаж",
-            "барон",
-            "басня",
-            "бекон",
-            "берег",
-            "бетон",
-            "билет",
-            "бисер",
-            "бланк",
-            "блеск",
-            "блоха",
-            "бокал",
-            "бомба",
-            "борец",
-            "ботва",
-            "брань",
-            "брешь",
-            "бронх",
-            "брюки",
-            "бугор",
-            "будка",
-            "буква",
-            "букет",
-            "булка",
-            "буран",
-            "буфер",
-            "буфет",
-            "вагон",
-            "валет",
-            "ванна",
-            "вафля",
-            "ведро",
-            "веник",
-        ];
-        private Random _randomizer;
-        public ReadOnlyCollection<string> Words { get { return _words.AsReadOnly(); } }
-        private WordDict(int seed)
+        public uint WordLength { get { return _wordLength; } }
+        public int Length { get { return _words.Count; } }
+        public WordDict(IEnumerable<string> words)
         {
-            _randomizer = new Random(seed);
+            Words = words.ToList().AsReadOnly();
         }
-        public static void Init(int seed)
+        private bool CheckWordLength(string word, uint length) { return word.Length == length; }
+        private bool CheckIndex(int index) { return index > 0 && index < Length; }
+        public bool AddWord(string word)
         {
-            _instance = new WordDict(seed);
+            if (!CheckWordLength(word, _wordLength))
+                return false;
+            
+            _words.Add(word);
+            return true;
         }
-        public string Pick()
+        public bool RemoveWord(int index)
         {
-            return _words[_randomizer.Next(_words.Length)];
+            if (!CheckIndex(index) || _words.Count - 1 == 0)
+                return false;
+            
+            _words.RemoveAt(index);
+            return true;
+        }
+        public string PickWord(int index)
+        {
+            if (!CheckIndex(index))
+                throw new IndexOutOfRangeException($"Index must be beetween {1} - {Length - 1}, got {index}");
+            
+            return _words[index];
         }
     }
 }

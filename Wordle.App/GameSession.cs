@@ -4,79 +4,84 @@ namespace Wordle.App
 {
     public class GameSession
     {
-        public static readonly string STATUS_IN_PROGRESS = "IN_PROGRESS";
-        public static readonly string STATUS_WIN = "WIN";
-        public static readonly string STATUS_LOSE = "LOSE";
-        private static GameSession? _instance;
-        public static GameSession Instance
+        private string _correctWord;
+        private uint _maxAttempts;
+        private uint _attempts;
+        private string _status;
+        private List<string> _history;
+        /// <summary>
+        /// Отслеживает изменения CorrectWord и MaxAttempts
+        /// </summary>
+        private bool _isChanged;
+        public string CorrectWord 
         {
-            get
+            get { return _correctWord; }
+            set
             {
-                if (_instance == null)
-                    _instance = new GameSession("word", 1);
-
-                return _instance;
+                _correctWord = value;
+                _isChanged = true;
             }
         }
-        private string _word = "";
-        private uint _attemptsMax;
-        private uint _attempts;
-        private string _status = "";
-        private List<string> _history = [];
-        public string Word 
+        public uint MaxAttempts
         {
-            get { return _word; }
-            set { ReStart(); }
-        }
-        public uint AttemptsMax
-        {
-            get { return _attemptsMax; }
+            get { return _maxAttempts; }
             set
             {
                 if (value == 0)
-                    throw new Exception("AttemptsMax value = 0");
+                    throw new Exception("MaxAttempts value must be > 0.");
 
-                ReStart();
+                _maxAttempts = value;
+                _isChanged = true;
             }
         }
         public uint Attempts { get { return _attempts; } }
         public string Status { get { return _status; } }
         public ReadOnlyCollection<string> History { get { return _history.AsReadOnly(); } }
-        private GameSession(string word, uint attemptsMax)
+        public bool IsChanged { get { return _isChanged; } }
+        public GameSession(string correctWord, uint maxAttempts)
         {
-            _word = word;
-            _attemptsMax = attemptsMax;
-            _status = STATUS_IN_PROGRESS;
+            CorrectWord = correctWord;
+            MaxAttempts = maxAttempts;
+            Reset();
         }
-        public static void Init(string word, uint attemptsMax)
+        private bool CheckAttempts() { return Attempts < MaxAttempts; }
+        /// <summary>
+        /// По задумке: поменялись CorrectWord или MaxAttempts - нужно выполнить Reset()
+        /// </summary>
+        public void Reset()
         {
-            _instance = new GameSession(word, attemptsMax);
-        }
-        private void ReStart()
-        {
-            _status = STATUS_IN_PROGRESS;
             _attempts = 0;
-
-            _history.Clear();
+            _status = Statuses.IN_PROGRESS;
+            _history = [];
+            _isChanged = false;
         }
-        public bool Guess(string word)
+        /// <summary>
+        /// Угадал? true : false; если попытки кончились - null
+        /// </summary>
+        /// <param name="guessWord"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public bool? Guess(string guessWord)
         {
-            if (!IsPlayable())
-                throw new Exception($"Attempts ({Attempts}) >= AttemptsMax ({AttemptsMax}); Status: {Status}");
+            if (IsChanged)
+                throw new Exception($"Is not playable, IsChanged = true, must be resetted ('Reset()')");
 
-            if (word.Equals(Word))
+            if (!CheckAttempts())
             {
-                _status = STATUS_WIN;
+                _status = Statuses.LOSE;
+                return null;
+            }
 
+            _attempts++;
+            _history.Add(guessWord);
+
+            if (guessWord.Equals(CorrectWord))
+            {
+                _status = Statuses.WIN;
                 return true;
             }
 
-            _history.Add(word);
             return false;
-        }
-        public bool IsPlayable()
-        {
-            return Status.Equals(STATUS_IN_PROGRESS) && Attempts < AttemptsMax;
         }
     }
 }
