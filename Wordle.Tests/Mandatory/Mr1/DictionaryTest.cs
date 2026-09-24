@@ -8,7 +8,7 @@ public class DictionaryTest
         Skip = "MR1: реализуй тест и удали эту строку")]
     public void DictionaryContainsAtLeastFiftyWords()
     {
-        Assert.Fail("Тест не реализован");
+        Assert.Fail();
     }
 
     [Fact(
