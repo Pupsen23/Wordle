@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Tests\\Wordle.Tests.csproj": {}
+    "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Core\\Wordle.App.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Tests\\Wordle.Tests.csproj": {
+    "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Core\\Wordle.App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Tests\\Wordle.Tests.csproj",
-        "projectName": "Wordle.Tests",
-        "projectPath": "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Tests\\Wordle.Tests.csproj",
+        "projectUniqueName": "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Core\\Wordle.App.csproj",
+        "projectName": "Wordle.App",
+        "projectPath": "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Core\\Wordle.App.csproj",
         "packagesPath": "C:\\Users\\korne\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Tests\\obj\\",
+        "outputPath": "D:\\Projects\\Dotnet\\tbank\\Wordle\\Wordle.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -51,24 +51,6 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "dependencies": {
-            "Microsoft.NET.Test.Sdk": {
-              "target": "Package",
-              "version": "[17.14.1, )"
-            },
-            "coverlet.collector": {
-              "target": "Package",
-              "version": "[6.0.4, )"
-            },
-            "xunit": {
-              "target": "Package",
-              "version": "[2.9.3, )"
-            },
-            "xunit.runner.visualstudio": {
-              "target": "Package",
-              "version": "[3.1.4, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
