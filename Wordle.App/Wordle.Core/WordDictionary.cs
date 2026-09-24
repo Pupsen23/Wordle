@@ -11,18 +11,15 @@ namespace Wordle.Core
             set
             {
                 if (WordNormalizer.CheckEmpty(value))
-                throw new Exception("Words array length must be > 0.");
+                    throw new ArgumentException($"Words array length must be > 0, received (length): {_words.Count()}");
 
                 if (!WordNormalizer.CheckWordLength(value, value.ElementAt(0).Length))
-                    throw new Exception($"Not consistent word length.");
+                    throw new ArgumentException($"Not consistent word length.");
 
                 _words = value.ToList();
             }
         }
         public int Length { get { return _words.Count; } }
-        public WordDictionary(IEnumerable<string> words)
-        {
-            Words = words.ToList().AsReadOnly();
-        }
+        public WordDictionary(IEnumerable<string> words) { Words = words.ToList().AsReadOnly(); }
     }
 }
