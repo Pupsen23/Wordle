@@ -1,8 +1,8 @@
 namespace Wordle.Core;
 
-public class Attempt
+public class GameAttempt
 {
-    private int _value;
+    private int _value = 0;
     private int _maxValue;
     public int Value
     {
@@ -26,10 +26,7 @@ public class Attempt
             _maxValue = value;
         }
     }
-    public Attempt(int maxValue)
-    {
-        MaxValue = maxValue;
-        Value = 0;
-    }
+    public GameAttempt(int maxValue) { MaxValue = maxValue; }
     public bool CheckValues() { return Value < MaxValue; }
+    public int GetRemaining() { return MaxValue - Value; }
 }

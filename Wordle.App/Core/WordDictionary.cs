@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-
 namespace Wordle.Core;
 
 public class WordDictionary
