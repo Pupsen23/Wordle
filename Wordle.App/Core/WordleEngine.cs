@@ -16,29 +16,32 @@ public class WordleEngine
         
         return null;
     }
-    public static GuessResult ApplyGuess(GameSession gameSession, string guessWord)
+    public static GuessResult? ApplyGuess(GameSession gameSession, string guessWord)
     {
         if (!gameSession.CheckStatus())
-            return new GuessResult(false, GuessResult.GuessStatus.GameIsFinished, guessWord);
+            return null;
 
-        if (!WordNormalizer.CheckGuessWord(guessWord, gameSession.CorrectWord))
-            return new GuessResult(false, GuessResult.GuessStatus.InvalidWordLength, guessWord);
+        if (!WordNormalizer.CheckWordLength(guessWord, gameSession.CorrectWord.Length))
+            return new GuessResult(false, guessWord, GuessResult.GuessErrorStatus.InvalidWordLength);
+
+        if (!WordNormalizer.CheckWordSymbols(guessWord))
+            return new GuessResult(false, guessWord, GuessResult.GuessErrorStatus.HasInvalidSymbols);
 
         GuessResult guessResult;
         gameSession.Attempts.Value++;
 
         if (gameSession.CorrectWord.Equals(guessWord))
         {
-            guessResult = new GuessResult(true, GuessResult.GuessStatus.Correct, guessWord);
+            guessResult = new GuessResult(true, guessWord);
             gameSession.Status = GameSession.GameStatus.Win;    
         }
         else if (!gameSession.Attempts.CheckValues())
         {
-            guessResult = new GuessResult(false, GuessResult.GuessStatus.NoAttempts, guessWord);
+            guessResult = new GuessResult(false, guessWord);
             gameSession.Status = GameSession.GameStatus.Lose;    
         }
         else
-            guessResult = new GuessResult(false, GuessResult.GuessStatus.Incorrect, guessWord);
+            guessResult = new GuessResult(false, guessWord);
 
         gameSession.History.Add(guessResult);
 
