@@ -1,4 +1,4 @@
-namespace Core;
+namespace Wordle.Core;
 
 public static class Marker
 {

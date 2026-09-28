@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace Core;
+namespace Wordle.Core;
 
 public class WordDictionary
 {
