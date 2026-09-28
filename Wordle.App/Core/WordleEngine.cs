@@ -1,15 +1,14 @@
 namespace Wordle.Core;
 
-public class WordleEngine
+public static class WordleEngine
 {
-    public int MaxAttempts { get; set; } = 5;
-    public WordRandomizer WordRandomizer { get; } = new WordRandomizer();
-    public WordleEngine() {}
-    public GameSession StartGame(WordDictionary wordDictionary)
+    public static int MaxAttempts { get; set; } = 5;
+    public static WordRandomizer WordRandomizer { get; } = new WordRandomizer();
+    public static GameSession StartGame(WordDictionary wordDictionary)
     {
         return new GameSession(wordDictionary, WordRandomizer.GetRandomWord(wordDictionary), MaxAttempts);
     }
-    public GameSession? StartGame(WordDictionary wordDictionary, string correctWord)
+    public static GameSession? StartGame(WordDictionary wordDictionary, string correctWord)
     {
         if (WordNormalizer.CheckCorrectWord(correctWord, wordDictionary))
             return new GameSession(wordDictionary, correctWord, MaxAttempts);
@@ -18,6 +17,8 @@ public class WordleEngine
     }
     public static GuessResult? ApplyGuess(GameSession gameSession, string guessWord)
     {
+        guessWord = guessWord.Trim().ToLowerInvariant();
+        
         if (!gameSession.CheckStatus())
             return null;
 

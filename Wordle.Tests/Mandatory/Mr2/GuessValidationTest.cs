@@ -1,51 +1,75 @@
+using Wordle.Core;
+
 namespace Wordle.Tests.Mandatory.Mr2;
 
 /// <summary>Обязательные тесты: валидация ввода.</summary>
 public class GuessValidationTest
 {
-    [Theory(
-        DisplayName = "Слово не из 5 букв отклоняется",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Theory(DisplayName = "Слово не из 5 букв отклоняется")]
     [InlineData("дом")]
     [InlineData("домики")]
     [InlineData("")]
     public void WordOfWrongLengthIsRejected(string guess)
     {
-        Assert.Fail("Тест не реализован");
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
+
+        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
+
+        Assert.Equal(GuessResult.GuessErrorStatus.InvalidWordLength, guessResult.ErrorStatus);
     }
 
-    [Theory(
-        DisplayName = "Ввод с не-буквами отклоняется",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Theory(DisplayName = "Ввод с не-буквами отклоняется")]
     [InlineData("дом12")]
     [InlineData("дом!!")]
     [InlineData("до ма")]
     public void NonLetterInputIsRejected(string guess)
     {
-        Assert.Fail("Тест не реализован");
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
+
+        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
+
+        Assert.Equal(GuessResult.GuessErrorStatus.HasInvalidSymbols, guessResult.ErrorStatus);
     }
 
-    [Fact(
-        DisplayName = "Слово, которого нет в словаре, отклоняется",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Слово, которого нет в словаре, отклоняется")]
     public void WordOutsideDictionaryIsRejected()
     {
-        Assert.Fail("Тест не реализован");
+        string guess = "чмоня";
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
+
+        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
+
+        Assert.Null(guessResult.ErrorStatus);
+        Assert.False(guessResult.Result);
     }
 
-    [Fact(
-        DisplayName = "Некорректный ввод не тратит попытку",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Некорректный ввод не тратит попытку")]
     public void InvalidInputDoesNotConsumeAttempt()
     {
-        Assert.Fail("Тест не реализован");
+        string guess = "дом12";
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
+        int attempts = gameSession.Attempts.Value;
+
+        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
+
+        Assert.Equal(attempts, gameSession.Attempts.Value);
     }
 
-    [Fact(
-        DisplayName = "Ввод не зависит от регистра: \"ОЗЕРО\" и \"озеро\" обрабатываются одинаково",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Ввод не зависит от регистра: \"ОЗЕРО\" и \"озеро\" обрабатываются одинаково")]
     public void InputIsCaseInsensitive()
     {
-        Assert.Fail("Тест не реализован");
+        string guess1 = "ОЗЕРО";
+        string guess2 = "озеро";
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
+
+        GuessResult guessResult1 = WordleEngine.ApplyGuess(gameSession, guess1)!;
+        GuessResult guessResult2 = WordleEngine.ApplyGuess(gameSession, guess2)!;
+
+        Assert.Equal(guessResult1.Word, guessResult2.Word);
     }
 }

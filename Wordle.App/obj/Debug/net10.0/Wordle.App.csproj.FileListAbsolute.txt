@@ -1,0 +1,15 @@
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/Wordle.App.GeneratedMSBuildEditorConfig.editorconfig
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/Wordle.App.AssemblyInfoInputs.cache
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/Wordle.App.AssemblyInfo.cs
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/Wordle.App.csproj.CoreCompileInputs.cache
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/Wordle.App.sourcelink.json
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/bin/Debug/net10.0/Wordle.App
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/bin/Debug/net10.0/Wordle.App.deps.json
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/bin/Debug/net10.0/Wordle.App.runtimeconfig.json
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/bin/Debug/net10.0/Wordle.App.dll
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/bin/Debug/net10.0/Wordle.App.pdb
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/Wordle.App.dll
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/refint/Wordle.App.dll
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/Wordle.App.pdb
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/Wordle.App.genruntimeconfig.cache
+/media/data/Projects/Dotnet/tbank/Wordle/Wordle.App/obj/Debug/net10.0/ref/Wordle.App.dll

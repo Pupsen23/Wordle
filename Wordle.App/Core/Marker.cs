@@ -4,27 +4,15 @@ public static class Marker
 {
     public enum CharStatus
     {
-        INCORRECT,
-        PRESENT,
-        CORRECT
+        Incorrect = 0,
+        Present = 1,
+        Correct = 2
     };
     public static CharStatus[] GetMarked(GameSession gameSession, string guessWord)
     {
-        return GetMerged(GetCorrect(guessWord, gameSession.CorrectWord), GetPresent(guessWord, gameSession.CorrectWord));
-    }
-    private static Dictionary<char, int> GetCharsCount(string guessWord)
-    {
-        Dictionary<char, int> charCount = [];
-
-        for (int i = 0; i < guessWord.Length; i++)
-        {
-            if (!charCount.ContainsKey(guessWord[i]))
-                charCount.Add(guessWord[i], 0);
-
-            charCount[guessWord[i]]++;
-        }
-
-        return charCount;
+        CharStatus[] charStatusCorrect = GetCorrect(guessWord, gameSession.CorrectWord);
+        CharStatus[] charStatusPresent = GetPresent(guessWord, gameSession.CorrectWord, charStatusCorrect);
+        return GetMerged(charStatusCorrect, charStatusPresent);
     }
     private static CharStatus[] GetCorrect(string guessWord, string correctWord)
     {
@@ -33,43 +21,39 @@ public static class Marker
         for (int i = 0; i < correctWord.Length; i++)
         {
             if (correctWord[i] == guessWord[i])
-                charStatus[i] = CharStatus.CORRECT;
+                charStatus[i] = CharStatus.Correct;
         }
 
         return charStatus;
     }
-    private static CharStatus[] GetPresent(string guessWord, string correctWord)
+    private static CharStatus[] GetPresent(string guessWord, string correctWord, CharStatus[] charStatusCorrect)
     {
-        CharStatus[] charStatus = new CharStatus[correctWord.Length];
-        Dictionary<char, int> charCount = GetCharsCount(guessWord);
+        CharStatus[] charStatusPresent = new CharStatus[correctWord.Length];
 
         for (int i = 0; i < correctWord.Length; i++)
         {
             if (correctWord[i] == guessWord[i])
                 continue;
 
-            if (correctWord.Contains(guessWord[i]) && charCount[guessWord[i]] != 0)
-            {
-                charStatus[i] = CharStatus.PRESENT;
-                charCount[guessWord[i]]--;
-            }
+            if (correctWord.Contains(guessWord[i]) && correctWord.Count(guessWord[i]) != charStatusCorrect.Count(CharStatus.Correct))
+                charStatusPresent[i] = CharStatus.Present;
         }
 
-        return charStatus;
+        return charStatusPresent;
     }
-    private static CharStatus[] GetMerged(CharStatus[] correctCharStatuses, CharStatus[] presentCharStatuses)
+    private static CharStatus[] GetMerged(CharStatus[] correctCharStatus, CharStatus[] presentCharStatus)
     {
-        CharStatus[] charStatus = new CharStatus[correctCharStatuses.Length];
+        CharStatus[] charStatus = new CharStatus[correctCharStatus.Length];
 
-        for (int i = 0; i < correctCharStatuses.Length; i++)
+        for (int i = 0; i < correctCharStatus.Length; i++)
         {
-            if (correctCharStatuses[i] == CharStatus.CORRECT)
+            if (correctCharStatus[i] == CharStatus.Correct)
             {
-                charStatus[i] = CharStatus.CORRECT;
+                charStatus[i] = CharStatus.Correct;
                 continue;
             }
             
-            charStatus[i] = presentCharStatuses[i];
+            charStatus[i] = presentCharStatus[i];
         }
 
         return charStatus;

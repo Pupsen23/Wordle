@@ -1,37 +1,66 @@
+using Wordle.Core;
+
 namespace Wordle.Tests.Mandatory.Mr2;
 
 /// <summary>Обязательные тесты: раскраска букв.</summary>
 public class LetterMatchingTest
 {
-    [Fact(
-        DisplayName = "Базовый случай: загадано \"озеро\", ввод \"арбуз\" -> ❌🟡❌❌🟡",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Базовый случай: загадано \"озеро\", ввод \"арбуз\" -> ❌🟡❌❌🟡")]
     public void BasicCase()
     {
-        Assert.Fail("Тест не реализован");
+        string correctWord = "озеро";
+        string guessWord = "арбуз";
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
+        Marker.CharStatus[] expected = [ Marker.CharStatus.Incorrect, Marker.CharStatus.Present, Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect, Marker.CharStatus.Present ];
+        
+        Marker.CharStatus[] actual = Marker.GetMarked(gameSession, guessWord);
+
+        Assert.Equal(expected, actual);
     }
 
-    [Fact(
-        DisplayName = "Полное совпадение: загадано \"озеро\", ввод \"озеро\" -> ✅✅✅✅✅",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Полное совпадение: загадано \"озеро\", ввод \"озеро\" -> ✅✅✅✅✅")]
     public void ExactMatch()
     {
-        Assert.Fail("Тест не реализован");
+        string correctWord = "озеро";
+        string guessWord = "озеро";
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
+        Marker.CharStatus[] expected =
+        [ Marker.CharStatus.Correct, Marker.CharStatus.Correct, Marker.CharStatus.Correct, Marker.CharStatus.Correct, Marker.CharStatus.Correct ];
+        
+        Marker.CharStatus[] actual = Marker.GetMarked(gameSession, guessWord);
+
+        Assert.Equal(expected, actual);
     }
 
-    [Fact(
-        DisplayName = "Повторяющиеся буквы: загадано \"сорок\", ввод \"оооом\" -> 🟡❌❌✅❌",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Повторяющиеся буквы: загадано \"сорок\", ввод \"оооом\" -> 🟡❌❌✅❌")]
     public void RepeatedLettersAreNotDoubleCounted()
     {
-        Assert.Fail("Тест не реализован");
+        string correctWord = "сорок";
+        string guessWord = "оооом";
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
+        Marker.CharStatus[] expected =
+        [ Marker.CharStatus.Incorrect, Marker.CharStatus.Correct, Marker.CharStatus.Incorrect, Marker.CharStatus.Correct, Marker.CharStatus.Incorrect ];
+        
+        Marker.CharStatus[] actual = Marker.GetMarked(gameSession, guessWord);
+
+        Assert.Equal(expected, actual);
     }
 
-    [Fact(
-        DisplayName = "Ни одна буква не подошла: все позиции ❌",
-        Skip = "MR2: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Ни одна буква не подошла: все позиции ❌")]
     public void NoMatchingLetters()
     {
-        Assert.Fail("Тест не реализован");
+        string correctWord = "тапки";
+        string guessWord = "чмоня";
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
+        Marker.CharStatus[] expected =
+        [ Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect ];
+        
+        Marker.CharStatus[] actual = Marker.GetMarked(gameSession, guessWord);
+
+        Assert.Equal(expected, actual);
     }
 }

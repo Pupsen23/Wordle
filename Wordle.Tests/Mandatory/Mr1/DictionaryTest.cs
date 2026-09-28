@@ -1,29 +1,33 @@
+using Wordle.Core;
+
 namespace Wordle.Tests.Mandatory.Mr1;
 
 /// <summary>Обязательные тесты: словарь.</summary>
 public class DictionaryTest
 {
-    [Fact(
-        DisplayName = "Словарь содержит не меньше 50 слов",
-        Skip = "MR1: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Словарь содержит не меньше 50 слов")]
     public void DictionaryContainsAtLeastFiftyWords()
     {
-        Assert.Fail();
+        const int minWords = 50;
+
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+
+        Assert.InRange(wordDictionary.Length, minWords, int.MaxValue);
     }
 
-    [Fact(
-        DisplayName = "Все слова словаря состоят ровно из 5 букв",
-        Skip = "MR1: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Все слова словаря состоят ровно из 5 букв")]
     public void AllWordsAreExactlyFiveLettersLong()
     {
-        Assert.Fail("Тест не реализован");
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+
+        Assert.All(wordDictionary.Words, word => Assert.Matches("^[а-я]{5}$", word));
     }
 
-    [Fact(
-        DisplayName = "Пустой словарь приводит к ошибке, а не к запуску игры без слова",
-        Skip = "MR1: реализуй тест и удали эту строку")]
+    [Fact(DisplayName = "Пустой словарь приводит к ошибке, а не к запуску игры без слова")]
     public void EmptyDictionaryIsRejected()
     {
-        Assert.Fail("Тест не реализован");
+        List<string> words = new List<string>();
+
+        Assert.Throws<ArgumentException>(() => new WordDictionary(words));
     }
 }
