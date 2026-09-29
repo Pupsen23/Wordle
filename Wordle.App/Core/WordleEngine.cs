@@ -6,14 +6,13 @@ public static class WordleEngine
     public static WordRandomizer WordRandomizer { get; } = new WordRandomizer();
     public static GameSession StartGame(WordDictionary wordDictionary)
     {
+        WordRandomizer.Seed = WordRandomizer.GetRandomSeed();
         return new GameSession(wordDictionary, WordRandomizer.GetRandomWord(wordDictionary), MaxAttempts);
     }
-    public static GameSession? StartGame(WordDictionary wordDictionary, string correctWord)
+    public static GameSession StartGame(WordDictionary wordDictionary, string correctWord)
     {
-        if (WordNormalizer.CheckCorrectWord(correctWord, wordDictionary))
-            return new GameSession(wordDictionary, correctWord, MaxAttempts);
-        
-        return null;
+        WordRandomizer.Seed = WordRandomizer.GetRandomSeed();
+        return new GameSession(wordDictionary, correctWord, MaxAttempts);
     }
     public static GuessResult? ApplyGuess(GameSession gameSession, string guessWord)
     {

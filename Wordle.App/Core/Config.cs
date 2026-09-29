@@ -56,9 +56,9 @@ public class Config
         "касса"
     ];
     public static ReadOnlyCollection<string> Words { get { return _words.AsReadOnly(); } }
-    public int Seed { get; } = WordRandomizer.GetRandomSeed();
-    public int MaxAttempts { get; } = 5;
-    public string? CorrectWord { get; }
+    public int Seed { get; set; } = WordRandomizer.GetRandomSeed();
+    public int MaxAttempts { get; set; } = 5;
+    public string? CorrectWord { get; set; }
     public Config() {}
     public Config(int seed, int maxAttempts, string correctWord)
     {
