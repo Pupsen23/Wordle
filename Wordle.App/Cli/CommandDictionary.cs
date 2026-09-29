@@ -4,8 +4,8 @@ public class CommandDictionary
 {
     private Dictionary<char, ICommand> _keyValue = [];
     private Dictionary<string, ICommand> _nameValue = [];
-    public IEnumerable<ICommand> All { get { return _nameValue.Values; } }
     public IEnumerable<ICommand> AllClickable { get { return _keyValue.Values; } }
+    public IEnumerable<ICommand> All { get { return _nameValue.Values; } }
     public CommandDictionary() {}
     public bool Add(ICommand command)
     {

@@ -13,8 +13,9 @@ public class WordRandomizer
             _random = new Random(value);
         }
     }
-    public WordRandomizer() { Seed = (int) DateTime.Now.Ticks - DateTime.Now.Nanosecond * DateTime.Now.Microsecond; }
+    public WordRandomizer() { Seed = GetRandomSeed(); }
     public WordRandomizer(int seed) { Seed = seed; }
+    public static int GetRandomSeed() { return (int) DateTime.Now.Ticks - DateTime.Now.Nanosecond * DateTime.Now.Microsecond; }
     public int GetRandomIndex(WordDictionary wordDictionary) { return _random.Next(wordDictionary.Length); }
     public string GetRandomWord(WordDictionary wordDictionary) { return wordDictionary.Words[GetRandomIndex(wordDictionary)]; }
 }

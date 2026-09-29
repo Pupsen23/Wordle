@@ -1,6 +1,6 @@
-using System.Collections.ObjectModel;
+namespace Wordle.Core;
 
-public static class Config
+public class Config
 {
     private static List<string> _words =
     [
@@ -55,6 +55,15 @@ public static class Config
         "товар",
         "касса"
     ];
-    public const int MaxAttempts = 5;
     public static ReadOnlyCollection<string> Words { get { return _words.AsReadOnly(); } }
+    public int Seed { get; } = WordRandomizer.GetRandomSeed();
+    public int MaxAttempts { get; } = 5;
+    public string? CorrectWord { get; }
+    public Config() {}
+    public Config(int seed, int maxAttempts, string correctWord)
+    {
+        Seed = seed;
+        MaxAttempts = maxAttempts;
+        CorrectWord = correctWord;
+    }
 }

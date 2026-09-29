@@ -11,7 +11,7 @@ public class GuessValidationTest
     [InlineData("")]
     public void WordOfWrongLengthIsRejected(string guess)
     {
-        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary);
 
         GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
@@ -25,7 +25,7 @@ public class GuessValidationTest
     [InlineData("до ма")]
     public void NonLetterInputIsRejected(string guess)
     {
-        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary);
 
         GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
@@ -37,7 +37,7 @@ public class GuessValidationTest
     public void WordOutsideDictionaryIsRejected()
     {
         string guess = "чмоня";
-        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary);
 
         GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
@@ -50,7 +50,7 @@ public class GuessValidationTest
     public void InvalidInputDoesNotConsumeAttempt()
     {
         string guess = "дом12";
-        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary);
         int attempts = gameSession.Attempts.Value;
 
@@ -64,7 +64,7 @@ public class GuessValidationTest
     {
         string guess1 = "ОЗЕРО";
         string guess2 = "озеро";
-        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary);
 
         GuessResult guessResult1 = WordleEngine.ApplyGuess(gameSession, guess1)!;
