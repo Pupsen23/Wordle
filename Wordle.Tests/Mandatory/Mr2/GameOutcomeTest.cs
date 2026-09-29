@@ -9,7 +9,7 @@ public class GameOutcomeTest
     public void CorrectGuessWinsTheGame()
     {
         string correctWord = "мышка";
-        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
 
         WordleEngine.ApplyGuess(gameSession, correctWord);
@@ -22,7 +22,7 @@ public class GameOutcomeTest
     {
         string correctWord = "мышка";
         WordleEngine.MaxAttempts = 6;
-        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
 
         WordleEngine.ApplyGuess(gameSession, "нигга");
@@ -40,7 +40,7 @@ public class GameOutcomeTest
     {
         string correctWord = "мышка";
         WordleEngine.MaxAttempts = 2;
-        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
 
         GuessResult? guessResult = WordleEngine.ApplyGuess(gameSession, "чмоня");
@@ -55,7 +55,7 @@ public class GameOutcomeTest
     {
         string correctWord = "мышка";
         WordleEngine.MaxAttempts = 2;
-        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
 
         GuessResult? guessResult = WordleEngine.ApplyGuess(gameSession, "чмоня");

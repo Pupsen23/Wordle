@@ -10,7 +10,7 @@ public class LetterMatchingTest
     {
         string correctWord = "озеро";
         string guessWord = "арбуз";
-        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
         Marker.CharStatus[] expected = [ Marker.CharStatus.Incorrect, Marker.CharStatus.Present, Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect, Marker.CharStatus.Present ];
         
@@ -24,7 +24,7 @@ public class LetterMatchingTest
     {
         string correctWord = "озеро";
         string guessWord = "озеро";
-        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
         Marker.CharStatus[] expected =
         [ Marker.CharStatus.Correct, Marker.CharStatus.Correct, Marker.CharStatus.Correct, Marker.CharStatus.Correct, Marker.CharStatus.Correct ];
@@ -39,7 +39,7 @@ public class LetterMatchingTest
     {
         string correctWord = "сорок";
         string guessWord = "оооом";
-        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
         Marker.CharStatus[] expected =
         [ Marker.CharStatus.Incorrect, Marker.CharStatus.Correct, Marker.CharStatus.Incorrect, Marker.CharStatus.Correct, Marker.CharStatus.Incorrect ];
@@ -54,7 +54,7 @@ public class LetterMatchingTest
     {
         string correctWord = "тапки";
         string guessWord = "чмоня";
-        WordDictionary wordDictionary = new WordDictionary(DefaultConfig.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.Words);
         GameSession gameSession = WordleEngine.StartGame(wordDictionary, correctWord)!;
         Marker.CharStatus[] expected =
         [ Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect, Marker.CharStatus.Incorrect ];
