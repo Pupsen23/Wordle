@@ -9,7 +9,7 @@ namespace Wordle.Cli
         public const string seedArgName = "--seed";
         public const string correctWordArgName = "--correct-word";
         public static Config GetConfig(string[] args)
-        {   
+        {
             if (args.Contains(defaultArgName))
                 return new Config();
 
