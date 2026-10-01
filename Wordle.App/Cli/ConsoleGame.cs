@@ -125,7 +125,7 @@ public class ConsoleGame
     }
     public void Run()
     {
-        string? inputKey;
+        string? input;
         string[] options =
         [
             "1) Играть",
@@ -140,9 +140,9 @@ public class ConsoleGame
             _textWriter.WriteLine("Добро пожаловать в Wordle!");
             foreach (string option in options) _textWriter.WriteLine(option);
             _textWriter.Write("Ввод: ");
-            inputKey = _textReader.ReadLine()?.Trim().ToLowerInvariant();
+            input = _textReader.ReadLine()?.Trim().ToLowerInvariant();
 
-            switch (inputKey)
+            switch (input)
             {
                 case "1":
                     PlayOnce();
