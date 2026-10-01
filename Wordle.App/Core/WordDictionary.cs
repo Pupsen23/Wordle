@@ -9,7 +9,7 @@ public class WordDictionary
         set
         {
             if (WordNormalizer.CheckEmpty(value))
-                throw new ArgumentException($"Words array length must be > 0, received (length): {value.Count()}");
+                throw new ArgumentException($"Words array length must be > 0, received (length): {value.Count()}.");
 
             _words = value.ToList();
 
@@ -19,10 +19,10 @@ public class WordDictionary
             for (int i = 0; i < _words.Count; i++)
             {
                 if (!WordNormalizer.CheckWordLength(_words[i], _words[0].Length))
-                    throw new ArgumentException($"Not consistent word length, index: {i}");
+                    throw new ArgumentException($"Not consistent word length, index: {i}.");
 
                 if (!WordNormalizer.CheckWordSymbols(_words[i]))
-                    throw new ArgumentException($"Not allowed symbol in words element, index: {i}");
+                    throw new ArgumentException($"Not allowed symbol in words element, index: {i}.");
             }
         }
     }

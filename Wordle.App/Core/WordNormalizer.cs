@@ -14,8 +14,4 @@ public static class WordNormalizer
 
         return true;
     }
-    public static bool CheckCorrectWord(string correctWord, WordDictionary wordDictionary)
-    {
-        return wordDictionary.Words.Contains(correctWord);
-    }
 }

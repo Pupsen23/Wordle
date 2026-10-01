@@ -10,7 +10,7 @@ public class GameAttempt
         set
         {
             if (value > MaxValue || value < 0)
-                throw new ArgumentException($"Value proprty of Attempt must be <= MaxValue and >= 0, received: {value}");
+                throw new ArgumentException($"Value proprty of GameAttempt must be <= MaxValue and >= 0, received: {value}.");
             
             _value = value;
         }
@@ -21,7 +21,7 @@ public class GameAttempt
         set
         {
             if (value < 1)
-                throw new ArgumentException($"MaxValue proprty of Attempt must be >= 1, received: {value}");
+                throw new ArgumentException($"MaxValue property of GameAttempt must be >= 1, received: {value}.");
             
             _maxValue = value;
         }

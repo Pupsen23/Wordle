@@ -8,8 +8,8 @@ public class GuessResult
         HasInvalidSymbols = 1
     }
     public bool Result { get; }
-    public GuessErrorStatus? ErrorStatus { get; }
     public string Word { get; }
+    public GuessErrorStatus? ErrorStatus { get; }
     public GuessResult(bool result, string word)
     {
         Result = result;

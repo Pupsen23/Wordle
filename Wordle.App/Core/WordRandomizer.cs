@@ -2,8 +2,8 @@ namespace Wordle.Core;
 
 public class WordRandomizer
 {
-    private int _seed;
     private Random _random;
+    private int _seed;
     public int Seed 
     {
         get { return _seed; }

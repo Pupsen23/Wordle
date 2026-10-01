@@ -1,35 +1,45 @@
+using Wordle.Core;
+
 namespace Wordle.Cli
 {
     public class ArgumentParser
     {
         public const string defaultArgName = "--default";
-        public const string seedArgName = "--seed";
         public const string maxAttemptsArgName = "--max-attempts";
+        public const string seedArgName = "--seed";
         public const string correctWordArgName = "--correct-word";
-        public static Core.Config GetConfig(string[] args)
+        public static Config GetConfig(string[] args)
         {   
             if (args.Contains(defaultArgName))
-                return new Core.Config();
+                return new Config();
 
             string tempArgValue;
             int seedArgValue;
             int maxAttemptsArgValue;
             string correctWordArgValue;
+            ArgumentException seedException;
+            ArgumentException correctWordException;
 
+            tempArgValue = FindArgumentValue(args, maxAttemptsArgName);
+            ConvertArgumentValue(tempArgValue, out maxAttemptsArgValue);
+
+            try
             {
                 tempArgValue = FindArgumentValue(args, seedArgName);
                 ConvertArgumentValue(tempArgValue, out seedArgValue);
+                return new Config(maxAttemptsArgValue, seedArgValue);
             }
-            {
-                tempArgValue = FindArgumentValue(args, maxAttemptsArgName);
-                ConvertArgumentValue(tempArgValue, out maxAttemptsArgValue);
-            }
+            catch(ArgumentException ex) { seedException = ex; }
+
+            try
             {
                 tempArgValue = FindArgumentValue(args, correctWordArgName);
                 ConvertArgumentValue(tempArgValue, out correctWordArgValue );
+                return new Config(maxAttemptsArgValue, correctWordArgValue);
             }
+            catch (ArgumentException ex) { correctWordException = ex; }
 
-            return new Core.Config(seedArgValue, maxAttemptsArgValue, correctWordArgValue);
+            throw new ArgumentException(seedException.Message + ' ' + correctWordException.Message);
         }
         private static string FindArgumentValue(string[] args, string argName)
         {
@@ -55,7 +65,10 @@ namespace Wordle.Cli
             if (string.IsNullOrEmpty(argValue))
                 throw new ArgumentNullException($"Failed to convert '{argValue}' to string.");
 
-            argValueConverted = argValue;
+            if (!WordNormalizer.CheckWordSymbols(argValue))
+                throw new ArgumentException($"Forbidden symbol(s) found in '--correct-word' argument value: {argValue}.");
+
+            argValueConverted = argValue.Trim().ToLowerInvariant();
         }
     }
 }

@@ -2,7 +2,7 @@ namespace Wordle.Cli;
 
 public class CommandDictionary
 {
-    private Dictionary<char, ICommand> _keyValue = [];
+    /*private Dictionary<char, ICommand> _keyValue = [];
     private Dictionary<string, ICommand> _nameValue = [];
     public IEnumerable<ICommand> AllClickable { get { return _keyValue.Values; } }
     public IEnumerable<ICommand> All { get { return _nameValue.Values; } }
@@ -25,5 +25,5 @@ public class CommandDictionary
         return true;
     }
     public bool TryGetCommand(char key, out ICommand? command) { return _keyValue.TryGetValue(key, out command); }
-    public bool TryGetCommand(string name, out ICommand? command) { return _nameValue.TryGetValue(name, out command); }
+    public bool TryGetCommand(string name, out ICommand? command) { return _nameValue.TryGetValue(name, out command); }*/
 }

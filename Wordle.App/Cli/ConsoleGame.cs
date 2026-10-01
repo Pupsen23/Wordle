@@ -1,4 +1,3 @@
-using System.Net;
 using Wordle.Core;
 
 namespace Wordle.Cli;
@@ -27,7 +26,7 @@ public class ConsoleGame
                                 $"Длина слова: {gameSession.CorrectWord.Length}\n" +
                                 $"Сид: {_config.Seed}\n");
 
-            _textWriter.Write("Догадка: ");
+            _textWriter.Write("Ввод ('q' - выход): ");
             guessWord = _textReader.ReadLine();
 
             if (string.IsNullOrEmpty(guessWord))
@@ -39,13 +38,18 @@ public class ConsoleGame
             if (guessWord.Equals("q"))
             {
                 _textWriter.Write("Игра завершена досрочно!\n" +
-                                        $"Загаданное слово: '{gameSession.CorrectWord}'\n");
+                                    $"Загаданное слово: '{gameSession.CorrectWord}'\n");
                 return;
             }
 
             GuessResult? guessResult = WordleEngine.ApplyGuess(gameSession, guessWord);
 
-            if (guessResult == null) break; // fdhfdhdfjhdfjh
+            if (guessResult == null) // но этого не может быть
+            {
+                _textWriter.WriteLine("Игра уже завершена, произошла ошибка!" +
+                                        $"Загаданное слово: '{gameSession.CorrectWord}'\n");
+                return;
+            }
 
             if (guessResult.ErrorStatus == GuessResult.GuessErrorStatus.InvalidWordLength)
             {
@@ -67,19 +71,20 @@ public class ConsoleGame
             else
             {
                 var guessWordMarked = Marker.GetMarked(gameSession, guessWord);
+                string marks = "";
                 _textWriter.WriteLine("Неверная догадка!");
 
                 foreach (var mark in guessWordMarked)
                 {
                     if (mark.Equals(Marker.CharStatus.Correct))
-                        _textWriter.Write("✅");
+                        marks += "✅";
                     else if (mark.Equals(Marker.CharStatus.Incorrect))
-                        _textWriter.Write("❌");
+                        marks += "❌";
                     else if (mark.Equals(Marker.CharStatus.Present))
-                        _textWriter.Write("🟡");
+                        marks += "🟡";
                 }
 
-                _textWriter.Write('\n');
+                _textWriter.WriteLine(marks);
 
                 if (gameSession.Status == GameSession.GameStatus.Lose)
                 {
@@ -99,26 +104,60 @@ public class ConsoleGame
         else
             gameSession = WordleEngine.StartGame(new WordDictionary(Config.Words), _config.CorrectWord);
 
-        _config.Seed = WordleEngine.WordRandomizer.Seed;
-
         RunGameLoop(gameSession);
+    }
+    public void UpdateSeed()
+    {
+        WordleEngine.WordRandomizer.Seed = WordRandomizer.GetRandomSeed();
+        _config.Seed = WordleEngine.WordRandomizer.Seed;
+        _textWriter.WriteLine($"Сид обновлен, новое значение: {_config.Seed}");
+    }
+    public void ShowConfig()
+    {
+        _textWriter.Write($"Максимальное кол-во попыток: {_config.MaxAttempts}\n" +
+                            $"Сид: {_config.Seed}\n");
+    }
+    public void ShowDebugInfo()
+    {
+        ShowConfig();
+        _textWriter.Write($"Последнее загаданное слово: '{_config.CorrectWord}'\n" +
+                            $"Строка вызова: '{Environment.CommandLine}'\n");
     }
     public void Run()
     {
-        string? input;
+        string? inputKey;
+        string[] options =
+        [
+            "1) Играть",
+            "2) Обновить сид",
+            "3) Посмотреть конфиг",
+            "4) Выход",
+            "!) Посмотреть отладочную информацию"
+        ];
 
         while (true)
         {
-            _textWriter.Write("Добро пожаловать в Wordle!\n" +
-                            "Играем? (да/нет): ");
-            input = _textReader.ReadLine()?.Trim().ToLowerInvariant();
+            _textWriter.WriteLine("Добро пожаловать в Wordle!");
+            foreach (string option in options) _textWriter.WriteLine(option);
+            _textWriter.Write("Ввод: ");
+            inputKey = _textReader.ReadLine()?.Trim().ToLowerInvariant();
 
-            switch (input)
+            switch (inputKey)
             {
-                case "да":
+                case "1":
                     PlayOnce();
                     break;
-                case "нет":
+                case "2":
+                    UpdateSeed();
+                    break;
+                case "3":
+                    ShowConfig();
+                    break;
+                case "!":
+                    ShowDebugInfo();
+                    break;
+                case "4":
+                case "q":
                     _textWriter.WriteLine("Выход...");
                     return;
                 default:

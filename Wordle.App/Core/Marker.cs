@@ -10,52 +10,30 @@ public static class Marker
     };
     public static CharStatus[] GetMarked(GameSession gameSession, string guessWord)
     {
-        CharStatus[] charStatusCorrect = GetCorrect(guessWord, gameSession.CorrectWord);
-        CharStatus[] charStatusPresent = GetPresent(guessWord, gameSession.CorrectWord, charStatusCorrect);
-        return GetMerged(charStatusCorrect, charStatusPresent);
+        CharStatus[] charStatus = new CharStatus[gameSession.CorrectWord.Length];
+        MarkCorrect(charStatus, guessWord, gameSession.CorrectWord);
+        MarkPresent(charStatus, guessWord, gameSession.CorrectWord);
+        return charStatus;
     }
-    private static CharStatus[] GetCorrect(string guessWord, string correctWord)
+    private static void MarkCorrect(CharStatus[] charStatus, string guessWord, string correctWord)
     {
-        CharStatus[] charStatus = new CharStatus[correctWord.Length];
-
         for (int i = 0; i < correctWord.Length; i++)
         {
             if (correctWord[i] == guessWord[i])
                 charStatus[i] = CharStatus.Correct;
         }
-
-        return charStatus;
     }
-    private static CharStatus[] GetPresent(string guessWord, string correctWord, CharStatus[] charStatusCorrect)
+    private static void MarkPresent(CharStatus[] charStatus, string guessWord, string correctWord)
     {
-        CharStatus[] charStatusPresent = new CharStatus[correctWord.Length];
+        int correctMarks = charStatus.Count(CharStatus.Correct);
 
         for (int i = 0; i < correctWord.Length; i++)
         {
             if (correctWord[i] == guessWord[i])
                 continue;
 
-            if (correctWord.Contains(guessWord[i]) && correctWord.Count(guessWord[i]) != charStatusCorrect.Count(CharStatus.Correct))
-                charStatusPresent[i] = CharStatus.Present;
+            if (correctWord.Contains(guessWord[i]) && correctWord.Count(guessWord[i]) != correctMarks)
+                charStatus[i] = CharStatus.Present;
         }
-
-        return charStatusPresent;
-    }
-    private static CharStatus[] GetMerged(CharStatus[] correctCharStatus, CharStatus[] presentCharStatus)
-    {
-        CharStatus[] charStatus = new CharStatus[correctCharStatus.Length];
-
-        for (int i = 0; i < correctCharStatus.Length; i++)
-        {
-            if (correctCharStatus[i] == CharStatus.Correct)
-            {
-                charStatus[i] = CharStatus.Correct;
-                continue;
-            }
-            
-            charStatus[i] = presentCharStatus[i];
-        }
-
-        return charStatus;
     }
 }
