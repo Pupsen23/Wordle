@@ -1,3 +1,5 @@
+using Wordle.Core.Words;
+
 namespace Wordle.Core;
 
 public class WordRandomizer
@@ -13,7 +15,7 @@ public class WordRandomizer
     }
     public static int GetRandomSeed() { return (int) DateTime.Now.Ticks - DateTime.Now.Nanosecond * DateTime.Now.Microsecond; }
     public int GetRandomIndex(WordDictionary wordDictionary) { return _random.Next(wordDictionary.Length); }
-    public string GetRandomWord(WordDictionary wordDictionary) { return wordDictionary.Words[GetRandomIndex(wordDictionary)]; }
+    public Word GetRandomWord(WordDictionary wordDictionary) { return wordDictionary.Words[GetRandomIndex(wordDictionary)]; }
     public int SetSeed(int seed)
     {
         int prevSeed = _seed;

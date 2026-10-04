@@ -1,8 +1,10 @@
+using Wordle.Core.Words;
+
 namespace Wordle.Core;
 
 public class Config
 {
-    private static List<string> _words =
+    private static List<string> _rawWords =
     [
         "арбуз",
         "банан",
@@ -55,13 +57,13 @@ public class Config
         "товар",
         "касса"
     ];
-    public static ReadOnlyCollection<string> Words { get { return _words.AsReadOnly(); } }
+    public static ReadOnlyCollection<string> RawWords { get { return _rawWords.AsReadOnly(); } }
     public bool? IsDetermined { get; set; }
     public int? MaxAttempts { get; set; }
     public int? Seed { get; set; }
-    public string? Word { get; set; }
+    public SecretWord? Word { get; set; }
     public Config() {}
-    public Config(bool isDetermined, int maxAttempts, int seed, string word)
+    public Config(bool isDetermined, int maxAttempts, int seed, SecretWord word)
     {
         IsDetermined = isDetermined;
         MaxAttempts = maxAttempts;

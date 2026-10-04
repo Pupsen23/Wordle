@@ -1,3 +1,5 @@
+using Wordle.Core.Words;
+
 namespace Wordle.Core;
 
 public static class WordleEngine
@@ -5,28 +7,20 @@ public static class WordleEngine
     public static WordRandomizer WordRandomizer { get; } = new WordRandomizer();
     public static GameSession StartGame(WordDictionary wordDictionary, int maxAttempts = 5)
     {
-        return new GameSession(WordRandomizer.GetRandomWord(wordDictionary), maxAttempts);
+        return new GameSession(new SecretWord(WordRandomizer.GetRandomWord(wordDictionary)), maxAttempts);
     }
-    public static GameSession StartGame(string word, int maxAttempts = 5)
+    public static GameSession StartGame(AbstractWord word, int maxAttempts = 5)
     {
-        return new GameSession(word, maxAttempts);
+        return new GameSession(new SecretWord(word), maxAttempts);
     }
-    public static GuessResult? ApplyGuess(GameSession gameSession, string guessWord)
-    {
-        guessWord = WordNormalizer.Normalize(guessWord);
-        
-        if (!gameSession.CheckStatus())
+    public static GuessResult? ApplyGuess(GameSession gameSession, Word guessWord)
+    {   
+        if (!gameSession.CheckStatus() || !guessWord.CompareLength(gameSession.Word))
             return null;
-
-        else if (!WordNormalizer.CheckLength(guessWord, gameSession.Word.Length))
-            return new GuessResult(guessWord, WordNormalizer.WordErrorStatus.InvalidLength);
-        else if (!WordNormalizer.CheckStructure(guessWord))
-            return new GuessResult(guessWord, WordNormalizer.WordErrorStatus.InvalidStructure);
-        else if (!WordNormalizer.CheckForbiddenSymbols(guessWord))
-            return new GuessResult(guessWord, WordNormalizer.WordErrorStatus.HasForbiddenSymbols);
 
         GuessResult guessResult;
         gameSession.Attempts++;
+        gameSession.HistAdd(guessWord);
 
         if (gameSession.Word.CompareTo(guessWord))
         {

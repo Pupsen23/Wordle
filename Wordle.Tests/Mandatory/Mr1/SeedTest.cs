@@ -9,7 +9,7 @@ public class SeedTest
     public void SameSeedProducesSameAnswer()
     {
         int seed = 123;
-        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
         WordRandomizer wordRandomizer1 = new WordRandomizer(seed);
         WordRandomizer wordRandomizer2 = new WordRandomizer(seed);
 
@@ -24,7 +24,7 @@ public class SeedTest
     {
         int seed1 = 123;
         int seed2 = 456;
-        WordDictionary wordDictionary = new WordDictionary(Config.Words);
+        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
         WordRandomizer wordRandomizer1 = new WordRandomizer(seed1);
         WordRandomizer wordRandomizer2 = new WordRandomizer(seed2);
 

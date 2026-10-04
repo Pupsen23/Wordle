@@ -1,3 +1,5 @@
+using Wordle.Core.Words;
+
 namespace Wordle.Core;
 
 public static class Marker
@@ -8,9 +10,9 @@ public static class Marker
         Present = 1,
         Correct = 2
     };
-    public static CharStatus[]? GetMarked(GameSession gameSession, string guessWord)
+    public static CharStatus[]? GetMarked(GameSession gameSession, Word guessWord)
     {
-        if (!WordNormalizer.CheckLength(guessWord, gameSession.Word.Length))
+        if (!guessWord.CompareLength(gameSession.Word))
             return null;
 
         CharStatus[] charStatusResult = new CharStatus[guessWord.Length];
@@ -33,11 +35,11 @@ public static class Marker
 
         return charStatusResult;
     }
-    private static Dictionary<char, int> GetCharCount(GameSession gameSession, string guessWord)
+    private static Dictionary<char, int> GetCharCount(GameSession gameSession, Word guessWord)
     {
         Dictionary<char, int> charCount = []; // символ из guessWord : кол-во в GameSession.Word
 
-        foreach (char symbol in guessWord)
+        foreach (char symbol in guessWord.Value)
         {
             if (!charCount.ContainsKey(symbol))
                 charCount.Add(symbol, gameSession.Word.Count(symbol));
@@ -52,16 +54,16 @@ public static class Marker
     // о - 2-1
     // к - 0
     // л - 0
-    private static CharStatus[] GetCorrectMarked(GameSession gameSession, string guessWord, Dictionary<char, int> charCount)
+    private static CharStatus[] GetCorrectMarked(GameSession gameSession, Word guessWord, Dictionary<char, int> charCount)
     {
         CharStatus[] charStatus = new CharStatus[guessWord.Length];
 
         for (int i = 0; i < guessWord.Length; i++)
         {
-            if (charCount[guessWord[i]] != 0 && gameSession.Word.CompareAt(guessWord[i], i))
+            if (charCount[guessWord.Value[i]] != 0 && gameSession.Word.CompareAt(guessWord.Value[i], i))
             {
                 charStatus[i] = CharStatus.Correct;
-                charCount[guessWord[i]]--;
+                charCount[guessWord.Value[i]]--;
             }
         }
 
@@ -74,16 +76,16 @@ public static class Marker
     // о - 1-1
     // к - 0
     // л - 0
-    private static CharStatus[] GetPresentMarked(GameSession gameSession, string guessWord, Dictionary<char, int> charCount)
+    private static CharStatus[] GetPresentMarked(GameSession gameSession, Word guessWord, Dictionary<char, int> charCount)
     {
         CharStatus[] charStatus = new CharStatus[guessWord.Length];
 
         for (int i = 0; i < guessWord.Length; i++)
         {
-            if (!gameSession.Word.CompareAt(guessWord[i], i) && charCount[guessWord[i]] != 0)
+            if (!gameSession.Word.CompareAt(guessWord.Value[i], i) && charCount[guessWord.Value[i]] != 0)
             {
                 charStatus[i] = CharStatus.Present;
-                charCount[guessWord[i]]--;
+                charCount[guessWord.Value[i]]--;
             }
         }
 

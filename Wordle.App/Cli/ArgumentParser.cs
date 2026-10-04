@@ -1,4 +1,5 @@
 using Wordle.Core;
+using Wordle.Core.Words;
 
 namespace Wordle.Cli
 {
@@ -32,7 +33,7 @@ namespace Wordle.Cli
             try
             {
                 string argValue = FindArgumentValue(args, wordArgName);
-                ConvertArgumentValue(argValue, out string convertedArgValue);
+                ConvertArgumentValue(argValue, out SecretWord convertedArgValue);
                 config.Word = convertedArgValue;
             }
             catch (ArgumentException ex) { argumentParseExceptions.Add(ex); }
@@ -58,19 +59,9 @@ namespace Wordle.Cli
             if (!int.TryParse(argValue, out argValueConverted))
                 throw new ArgumentException($"Failed to convert argument value '{argValue}' to integer.");
         }
-        private static void ConvertArgumentValue(string? argValue, out string argValueConverted)
+        private static void ConvertArgumentValue(string? argValue, out SecretWord argValueConverted)
         {
-            if (string.IsNullOrEmpty(argValue))
-                throw new ArgumentNullException($"Failed to convert argument value '{argValue}' to string (null or empty).");
-
-            if (!WordNormalizer.CheckLength(argValue))
-                throw new ArgumentException($"Argument value '{argValue}' has invalid length.");
-            else if (!WordNormalizer.CheckStructure(argValue))
-                throw new ArgumentException($"Argument value '{argValue}' has invalid structure.");
-            else if (!WordNormalizer.CheckForbiddenSymbols(argValue))
-                throw new ArgumentException($"Argument value '{argValue}' has forbidden symbols.");
-
-            argValueConverted = WordNormalizer.Normalize(argValue);
+            argValueConverted = new SecretWord(argValue);
         }
     }
 }
