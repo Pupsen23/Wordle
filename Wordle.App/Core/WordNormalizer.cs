@@ -2,9 +2,16 @@ namespace Wordle.Core;
 
 public static class WordNormalizer
 {
-    public static bool CheckWordLength(string word, int wordLength) { return word.Length == wordLength; }
-    public static bool CheckEmpty(IEnumerable<string> words) { return words.Count() == 0; }
-    public static bool CheckWordSymbols(string word)
+    public enum WordErrorStatus
+    {
+        InvalidLength,
+        InvalidStructure,
+        HasForbiddenSymbols,
+    }
+    public static bool CheckLength(string word1, string word2) { return word1.Length == word2.Length; }
+    public static bool CheckLength(string word, int wordLength) { return word.Length == wordLength; }
+    public static bool CheckLength(string word) { return word.Length > 1; }
+    public static bool CheckForbiddenSymbols(string word)
     {
         foreach (char symbol in word)
         {
@@ -14,4 +21,6 @@ public static class WordNormalizer
 
         return true;
     }
+    public static bool CheckStructure(string word) { return word.Count(word[0]) != word.Length; }
+    public static string Normalize(string word) { return word.Trim().ToLowerInvariant(); }
 }

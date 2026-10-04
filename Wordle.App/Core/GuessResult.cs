@@ -2,23 +2,17 @@ namespace Wordle.Core;
 
 public class GuessResult
 {
-    public enum GuessErrorStatus
-    {
-        InvalidWordLength = 0,
-        HasInvalidSymbols = 1
-    }
-    public bool Result { get; }
     public string Word { get; }
-    public GuessErrorStatus? ErrorStatus { get; }
-    public GuessResult(bool result, string word)
+    public bool? Result { get; }
+    public WordNormalizer.WordErrorStatus? WordErrorStatus { get; }
+    public GuessResult(string word, bool result)
     {
-        Result = result;
         Word = word;
+        Result = result;
     }
-    public GuessResult(bool result, string word, GuessErrorStatus? errorStatus)
+    public GuessResult(string word, WordNormalizer.WordErrorStatus wordErrorStatus)
     {
-        Result = result;
         Word = word;
-        ErrorStatus = errorStatus;
+        WordErrorStatus = wordErrorStatus;
     }
 }

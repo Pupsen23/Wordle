@@ -4,20 +4,49 @@ public class GameSession
 {
     public enum GameStatus
     {
-        InProgress = 0,
-        Win = 1,
-        Lose = 2
+        InProgress,
+        Win,
+        Lose
     }
-    public GameStatus Status { get; set; } = GameStatus.InProgress;
-    public List<GuessResult> History { get; } = [];
-    public WordDictionary WordDictionary { get; }
-    public string CorrectWord { get; }
-    public GameAttempt Attempts { get; }
-    public GameSession(WordDictionary wordDictionary, string correctWord, int maxAttempts)
+    private int _attempts = 0;
+    private GameStatus _status = GameStatus.InProgress;
+    private List<string> _history = [];
+    public SecretWord Word { get; }
+    public int MaxAttempts { get; }
+    public int Attempts
     {
-        WordDictionary= wordDictionary;
-        CorrectWord = correctWord;
-        Attempts = new GameAttempt(maxAttempts);
+        get { return _attempts; }
+        set
+        {
+            if (!CheckStatus())
+                throw new ArgumentException("GameSession Attempts value cannot be set when game is finished (not InProgress).");
+            else if (value > MaxAttempts)
+                throw new ArgumentException($"GameSession Attempts value (received: {value}) must be <= MaxAttempts value (current: {MaxAttempts}).");
+            
+            _attempts = value;
+        }
     }
-    public bool CheckStatus() { return Status.Equals(GameStatus.InProgress); }
+    public GameStatus Status
+    {
+        get { return _status; }
+        set
+        {
+            if (!CheckStatus())
+                throw new ArgumentException("GameSession Status value cannot be set when game is finished (not InProgress).");
+            
+            _status = value;
+        }
+    }
+    public ReadOnlyCollection<string> History { get { return _history.AsReadOnly(); } }
+    public GameSession(string word, int maxAttempts)
+    {
+        if (maxAttempts <= 0)
+            throw new ArgumentException("GameSession MaxAttemptps value must be > 0");
+        
+        Word = new SecretWord(word);
+        MaxAttempts = maxAttempts;
+    }
+    public bool CheckAttempts() { return Attempts < MaxAttempts; }
+    public bool CheckStatus() { return Status.Equals(GameStatus.InProgress); } // может CheckFinished?
+    public int GetRemainingAttempts() { return MaxAttempts - Attempts; }
 }
