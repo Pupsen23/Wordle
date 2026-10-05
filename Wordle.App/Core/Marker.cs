@@ -47,13 +47,6 @@ public static class Marker
 
         return charCount;
     }
-    // 🟡✅❌
-    // отбор
-    // около
-    // ✅❌❌❌❌
-    // о - 2-1
-    // к - 0
-    // л - 0
     private static CharStatus[] GetCorrectMarked(GameSession gameSession, Word guessWord, Dictionary<char, int> charCount)
     {
         CharStatus[] charStatus = new CharStatus[guessWord.Length];
@@ -69,13 +62,6 @@ public static class Marker
 
         return charStatus;
     }
-    // 🟡✅❌
-    // отбор
-    // около
-    // ✅❌🟡❌🟡
-    // о - 1-1
-    // к - 0
-    // л - 0
     private static CharStatus[] GetPresentMarked(GameSession gameSession, Word guessWord, Dictionary<char, int> charCount)
     {
         CharStatus[] charStatus = new CharStatus[guessWord.Length];

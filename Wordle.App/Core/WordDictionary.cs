@@ -14,9 +14,18 @@ public class WordDictionary
         bool setResult = SetWords(rawWords, checkConsistence);
 
         if (checkConsistence && !setResult)
-            throw new ArgumentException("WordDictionary constructor: parameter 'rawWords' cannot be empty and elements length must be consistent.");
+            throw new ArgumentException("Parameter 'rawWords' cannot be empty and elements length must be consistent.");
         else if (!setResult)
-            throw new ArgumentException("WordDictionary constructor: parameter 'rawWords' cannot be empty.");
+            throw new ArgumentException("Parameter 'rawWords' cannot be empty.");
+    }
+    public WordDictionary(IEnumerable<Word> words, bool checkConsistence = false)
+    {
+        bool setResult = SetWords(words, checkConsistence);
+
+        if (checkConsistence && !setResult)
+            throw new ArgumentException("Parameter 'rawWords' cannot be empty and elements length must be consistent.");
+        else if (!setResult)
+            throw new ArgumentException("Parameter 'rawWords' cannot be empty.");
     }
     /// <exception cref="ArgumentException"></exception>
     public bool SetWords(IEnumerable<string> rawWords, bool checkConsistence = false)
@@ -45,18 +54,19 @@ public class WordDictionary
         if (words.Count() == 0)
             return false;
 
-        if (checkConsistence)
-        {
-            Word firstWord = words.ElementAt(0);
+        Word firstWord = words.ElementAt(0);
+        List<Word> tempWords = [];
 
-            foreach (Word word in words)
-            {   
-                if (word.Length != firstWord.Length)
-                    return false;
-            }
+        foreach (Word word in words)
+        {   
+            if (checkConsistence && !word.CompareLength(firstWord))
+                return false;
+            
+            tempWords.Add(new Word(word));
         }
-        
-        _words = words.ToList(); // копия или ссылка?
+
+        _words = tempWords;
+        //_words = words.ToList(); // копия или ссылка? ссылка :(
         
         return true;
     }
