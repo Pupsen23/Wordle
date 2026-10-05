@@ -166,7 +166,7 @@ public class ConsoleGame
         }
 
         for (int i = _gameSession.History.Count - 1; i >= 0; i--)
-            _textWriter.WriteLine($"\t{i + 1}) {_gameSession.History[i]}");
+            _textWriter.WriteLine($"{i + 1}) {_gameSession.History[i].Value}");
     }
     // как выводить секретное слово если оно блять секретное?
     public void Run()
