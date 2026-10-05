@@ -58,16 +58,19 @@ public class Config
         "касса"
     ];
     public static ReadOnlyCollection<string> RawWords { get { return _rawWords.AsReadOnly(); } }
-    public bool? IsDetermined { get; set; }
+    public bool IsDetermined { get; set; } = false;
+    public bool ShowArgumentParseExceptions { get; set; } = false;
+    public bool ShowHelp { get; set; } = false;
     public int? MaxAttempts { get; set; }
     public int? Seed { get; set; }
     public SecretWord? Word { get; set; }
+    public Word? InstantGuessWord { get; set; }
     public Config() {}
-    public Config(bool isDetermined, int maxAttempts, int seed, SecretWord word)
+    public Config(int maxAttempts, int seed, SecretWord word, Word instantGuessWord)
     {
-        IsDetermined = isDetermined;
         MaxAttempts = maxAttempts;
         Seed = seed;
         Word = word;
+        InstantGuessWord = instantGuessWord;
     }
 }

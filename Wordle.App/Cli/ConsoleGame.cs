@@ -22,23 +22,37 @@ public class ConsoleGame
         else
             _config.Seed = WordleEngine.WordRandomizer.Seed;
     }
-    public void RunGameLoop()
+    public void RunGameLoop(Word? instantGuessWord = null)
     {
-        if (_gameSession == null)
+        if (_gameSession == null) // в текущей реализации не может быть
             return;
 
-        string? input;
+        string input;
+        bool normalizeResult;
         Word guessWord;
+        GuessResult? guessResult;
 
         while (true)
         {
+            if (instantGuessWord != null)
+            {
+                guessWord = instantGuessWord;
+                goto instant; // D:
+            }
+
             _textWriter.Write($"Попыток осталось: {_gameSession.GetRemainingAttempts()}/{_gameSession.MaxAttempts}\n" +
                                 $"Длина слова: {_gameSession.Word.Length}\n" +
                                 $"Ввод ('q' - выход): ");
 
-            input = _textReader.ReadLine();
+            normalizeResult = StringNormalizer.TryNormalize(_textReader.ReadLine(), out input);
+
+            if (!normalizeResult)
+            {
+                _textWriter.WriteLine("Некорректный ввод (пустой)!");
+                continue;
+            }
             
-            if (!string.IsNullOrEmpty(input) && input.Equals("q"))
+            if (input.Equals("q"))
             {
                 _textWriter.Write("Игра завершена досрочно!\n" +
                                     $"Загаданное слово: '{_gameSession.Word.GetRevealed().Value}'\n");
@@ -65,7 +79,8 @@ public class ConsoleGame
                 continue;
             }*/
 
-            GuessResult? guessResult = WordleEngine.ApplyGuess(_gameSession, guessWord);
+        instant:
+            guessResult = WordleEngine.ApplyGuess(_gameSession, guessWord);
 
             if (guessResult == null) // но этого не может быть        может быть второе условие
             {
@@ -122,7 +137,7 @@ public class ConsoleGame
             else
                 _gameSession = WordleEngine.StartGame(_config.Word);
             
-            _config.Word = null;
+            _config.Word = null; // забыто
         }
         else
         {
@@ -168,10 +183,9 @@ public class ConsoleGame
         for (int i = _gameSession.History.Count - 1; i >= 0; i--)
             _textWriter.WriteLine($"{i + 1}) {_gameSession.History[i].Value}");
     }
-    // как выводить секретное слово если оно блять секретное?
     public void Run()
     {
-        string? input;
+        string input;
         string[] options =
         [
             "1) Играть",
@@ -186,7 +200,7 @@ public class ConsoleGame
             _textWriter.WriteLine("Добро пожаловать в Wordle!");
             foreach (string option in options) _textWriter.WriteLine(option);
             _textWriter.Write("Ввод: ");
-            input = _textReader.ReadLine()?.Trim().ToLowerInvariant();
+            StringNormalizer.TryNormalize(_textReader.ReadLine(), out input);
 
             switch (input)
             {
@@ -211,5 +225,17 @@ public class ConsoleGame
                     break;
             }
         }
+    }
+    public void RunOnce()
+    {
+        if (_config.Word == null)
+        {
+            _textWriter.WriteLine("При использовании детерминированного режима необходимо указать аргумент '--word'.");
+            return;
+        }
+
+        _config.MaxAttempts = 1;
+
+        PlayOnce();
     }
 }
