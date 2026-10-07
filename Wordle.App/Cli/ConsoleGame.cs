@@ -134,9 +134,7 @@ public class ConsoleGame
             _config.Word = null; // забыто
         }
         else
-        {
             _gameSession = WordleEngine.StartGame(_wordDictionary, _config.MaxAttempts);
-        }
 
         RunGameLoop();
     }
@@ -160,7 +158,7 @@ public class ConsoleGame
             return;
         }
 
-        _textWriter.Write($"Итог: {_gameSession.Status}\n" + // эта строчка временна (2 - победа)
+        _textWriter.Write($"Итог: {_gameSession.Status}\n" +
                             $"Загаданное слово: '{_gameSession.Word.GetRevealed().Value}'\n" +
                             $"Потрачено попыток: {_gameSession.Attempts}/{_gameSession.MaxAttempts}\n" +
                             $"История попыток (с последней): \n");

@@ -1,6 +1,7 @@
 using Wordle.Core;
 using Wordle.Cli;
 using System.Text;
+using Wordle.Core.Words;
 
 namespace Wordle.Tests.Mandatory.Mr3;
 
@@ -11,8 +12,8 @@ public class MenuTest
     public void InvalidMenuChoiceDoesNotCrash()
     {
         Config config = new Config();
-        StringReader stringReader = new StringReader("5\nq\n");
-        ConsoleGame consoleGame = new ConsoleGame(stringReader, Console.Out, config);
+        StringReader stringReader = new StringReader("k\nq\n");
+        ConsoleGame consoleGame = new ConsoleGame(stringReader, Console.Out, config, new WordDictionary(config.RawWords));
         Exception? exception = null;
 
         try { consoleGame.Run(); }
@@ -24,11 +25,12 @@ public class MenuTest
     [Fact(DisplayName = "Можно сыграть несколько партий подряд без перезапуска")]
     public void SeveralGamesInARow()
     {
-        Config config = new Config(1, 123);
+        SecretWord secretWord = new SecretWord("озеро");
+        Config config = new Config() { MaxAttempts = 1, Word = secretWord };
         StringBuilder stringBuilder = new StringBuilder();
-        StringReader stringReader = new StringReader("1\nчмоня\n1\nчмоня\nq\n");
+        StringReader stringReader = new StringReader("1\nозеро\n1\nозеро\nq\n");
         StringWriter stringWriter = new StringWriter(stringBuilder);
-        ConsoleGame consoleGame = new ConsoleGame(stringReader, stringWriter, config);
+        ConsoleGame consoleGame = new ConsoleGame(stringReader, stringWriter, config, new WordDictionary(config.RawWords));
 
         consoleGame.Run();
         bool result = stringBuilder.ToString().ToArray().Count("Игра завершена") == 2;
@@ -39,24 +41,28 @@ public class MenuTest
     [Fact(DisplayName = "Детерминированный режим даёт предсказуемый вывод для автопроверки")]
     public void DeterministicModeProducesPredictableOutput()
     {
-        Config config = new Config(1, "озеро");
+        Config config = new Config() { MaxAttempts = 1, Word = new SecretWord("озеро") };
+        WordDictionary wordDictionary = new WordDictionary(config.RawWords);
         string result1;
         string result2;
-        string inputString = "1\nозеро\n1\nозеро\nq\n";
+        string inputString = "1\nозеро\nq\n";
         StringBuilder outputString = new StringBuilder();
         StringReader stringReader;
-        StringWriter stringWriter = new StringWriter(outputString);
+        StringWriter stringWriter;
 
         {
             stringReader = new StringReader(inputString);
-            ConsoleGame consoleGame = new ConsoleGame(stringReader, stringWriter, config);
+            stringWriter = new StringWriter(outputString);
+            ConsoleGame consoleGame = new ConsoleGame(stringReader, stringWriter, config, wordDictionary);
             consoleGame.Run();
             result1 = outputString.ToString();
             outputString.Clear();
         }
+        config = new Config() { MaxAttempts = 1, Word = new SecretWord("озеро") };
         {
             stringReader = new StringReader(inputString);
-            ConsoleGame consoleGame = new ConsoleGame(stringReader, stringWriter, config);
+            stringWriter = new StringWriter(outputString);
+            ConsoleGame consoleGame = new ConsoleGame(stringReader, stringWriter, config, wordDictionary);
             consoleGame.Run();
             result2 = outputString.ToString();
             outputString.Clear();

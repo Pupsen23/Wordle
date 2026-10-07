@@ -1,4 +1,5 @@
 using Wordle.Core;
+using Wordle.Core.Words;
 
 namespace Wordle.Tests.Mandatory.Mr2;
 
@@ -11,12 +12,13 @@ public class GuessValidationTest
     [InlineData("")]
     public void WordOfWrongLengthIsRejected(string guess)
     {
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
-        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
+        WordDictionary wordDictionary = new WordDictionary(new Config().RawWords);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary, 5);
 
-        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
-
-        Assert.Equal(GuessResult.GuessErrorStatus.InvalidWordLength, guessResult.ErrorStatus);
+        if (string.IsNullOrEmpty(guess))
+            Assert.Throws<ArgumentException>(() => new Word(guess));
+        else
+            Assert.Equal(GuessResult.GuessErrorStatus.InvalidLength, WordleEngine.ApplyGuess(gameSession, new Word(guess))!.ErrorStatus);
     }
 
     [Theory(DisplayName = "Ввод с не-буквами отклоняется")]
@@ -25,51 +27,39 @@ public class GuessValidationTest
     [InlineData("до ма")]
     public void NonLetterInputIsRejected(string guess)
     {
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
-        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
-
-        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
-
-        Assert.Equal(GuessResult.GuessErrorStatus.HasInvalidSymbols, guessResult.ErrorStatus);
+        Assert.Throws<ArgumentException>(() => new Word(guess));
     }
 
     [Fact(DisplayName = "Слово, которого нет в словаре, отклоняется")]
     public void WordOutsideDictionaryIsRejected()
     {
-        string guess = "чмоня";
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
-        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
+        Word guessWord = new Word("чмоня");
+        WordDictionary wordDictionary = new WordDictionary(new Config().RawWords);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary, 5);
 
-        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
+        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guessWord)!;
 
-        Assert.Null(guessResult.ErrorStatus);
-        Assert.False(guessResult.Result);
+        Assert.Equal(guessResult.ErrorStatus, GuessResult.GuessErrorStatus.NotInWordDictionary);
     }
 
     [Fact(DisplayName = "Некорректный ввод не тратит попытку")]
     public void InvalidInputDoesNotConsumeAttempt()
     {
-        string guess = "дом12";
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
-        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
-        int attempts = gameSession.Attempts.Value;
-
-        GuessResult guessResult = WordleEngine.ApplyGuess(gameSession, guess)!;
-
-        Assert.Equal(attempts, gameSession.Attempts.Value);
+        Assert.Throws<ArgumentException>(() => new Word("дом12"));
     }
 
     [Fact(DisplayName = "Ввод не зависит от регистра: \"ОЗЕРО\" и \"озеро\" обрабатываются одинаково")]
     public void InputIsCaseInsensitive()
     {
-        string guess1 = "ОЗЕРО";
-        string guess2 = "озеро";
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
-        GameSession gameSession = WordleEngine.StartGame(wordDictionary);
+        Word guessWord1 = new Word("ОЗЕРО");
+        Word guessWord2 = new Word("озеро");
+        WordDictionary wordDictionary = new WordDictionary(new Config().RawWords);
+        GameSession gameSession = WordleEngine.StartGame(wordDictionary, 5);
 
-        GuessResult guessResult1 = WordleEngine.ApplyGuess(gameSession, guess1)!;
-        GuessResult guessResult2 = WordleEngine.ApplyGuess(gameSession, guess2)!;
+        GuessResult guessResult1 = WordleEngine.ApplyGuess(gameSession, guessWord1)!;
+        GuessResult guessResult2 = WordleEngine.ApplyGuess(gameSession, guessWord2)!;
 
-        Assert.Equal(guessResult1.Word, guessResult2.Word);
+        Assert.Equal(guessWord1.Value, guessWord2.Value);
+        Assert.Equal(guessResult1.Word.Value, guessResult2.Word.Value);
     }
 }

@@ -10,7 +10,7 @@ public class DictionaryTest
     {
         const int minWords = 50;
 
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
+        WordDictionary wordDictionary = new WordDictionary(new Config().RawWords);
 
         Assert.InRange(wordDictionary.Length, minWords, int.MaxValue);
     }
@@ -18,9 +18,9 @@ public class DictionaryTest
     [Fact(DisplayName = "Все слова словаря состоят ровно из 5 букв")]
     public void AllWordsAreExactlyFiveLettersLong()
     {
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
+        WordDictionary wordDictionary = new WordDictionary(new Config().RawWords, true);
 
-        Assert.All(wordDictionary.Words, word => Assert.Matches("^[а-я]{5}$", word));
+        Assert.All(wordDictionary.Words, word => Assert.Matches("^[а-я]{5}$", word.Value));
     }
 
     [Fact(DisplayName = "Пустой словарь приводит к ошибке, а не к запуску игры без слова")]

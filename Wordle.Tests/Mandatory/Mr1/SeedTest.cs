@@ -1,4 +1,5 @@
 using Wordle.Core;
+using Wordle.Core.Words;
 
 namespace Wordle.Tests.Mandatory.Mr1;
 
@@ -9,12 +10,12 @@ public class SeedTest
     public void SameSeedProducesSameAnswer()
     {
         int seed = 123;
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
+        WordDictionary wordDictionary = new WordDictionary(new Config().RawWords);
         WordRandomizer wordRandomizer1 = new WordRandomizer(seed);
         WordRandomizer wordRandomizer2 = new WordRandomizer(seed);
 
-        string randomWord1 = wordRandomizer1.GetRandomWord(wordDictionary);
-        string randomWord2 = wordRandomizer2.GetRandomWord(wordDictionary);
+        Word randomWord1 = wordRandomizer1.GetRandomWord(wordDictionary);
+        Word randomWord2 = wordRandomizer2.GetRandomWord(wordDictionary);
 
         Assert.Equal(randomWord1, randomWord2);
     }
@@ -24,12 +25,12 @@ public class SeedTest
     {
         int seed1 = 123;
         int seed2 = 456;
-        WordDictionary wordDictionary = new WordDictionary(Config.RawWords);
+        WordDictionary wordDictionary = new WordDictionary(new Config().RawWords);
         WordRandomizer wordRandomizer1 = new WordRandomizer(seed1);
         WordRandomizer wordRandomizer2 = new WordRandomizer(seed2);
 
-        string randomWord1 = wordRandomizer1.GetRandomWord(wordDictionary);
-        string randomWord2 = wordRandomizer2.GetRandomWord(wordDictionary);
+        Word randomWord1 = wordRandomizer1.GetRandomWord(wordDictionary);
+        Word randomWord2 = wordRandomizer2.GetRandomWord(wordDictionary);
 
         Assert.NotEqual(randomWord1, randomWord2);
     }
