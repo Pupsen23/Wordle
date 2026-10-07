@@ -22,24 +22,40 @@ public class ConsoleGame
         else
             _config.Seed = WordleEngine.WordRandomizer.Seed;
     }
-    public void RunGameLoop(Word? instantGuessWord = null)
+    private void ShowMarked(Word guessWord)
+    {
+        if (_gameSession == null)
+            return;
+
+        // 🟡✅❌
+        var guessWordMarked = Marker.GetMarked(_gameSession, guessWord);
+        string marks = "";
+
+        foreach (var mark in guessWordMarked!) // прощаю, длина уже проверена (должно быть)
+        {
+            if (mark.Equals(Marker.CharStatus.Correct))
+                marks += "✅";
+            else if (mark.Equals(Marker.CharStatus.Incorrect))
+                marks += "❌";
+            else if (mark.Equals(Marker.CharStatus.Present))
+                marks += "🟡";
+        }
+
+        _textWriter.WriteLine(marks);
+    }
+    public void RunGameLoop()
     {
         if (_gameSession == null) // в текущей реализации не может быть
             return;
 
         string input;
         bool normalizeResult;
+        StringNormalizer.StringErrorStatus? inputCheckResult;
         Word guessWord;
         GuessResult? guessResult;
 
         while (true)
         {
-            if (instantGuessWord != null)
-            {
-                guessWord = instantGuessWord;
-                goto instant; // D:
-            }
-
             _textWriter.Write($"Попыток осталось: {_gameSession.GetRemainingAttempts()}/{_gameSession.MaxAttempts}\n" +
                                 $"Длина слова: {_gameSession.Word.Length}\n" +
                                 $"Ввод ('q' - выход): ");
@@ -59,61 +75,43 @@ public class ConsoleGame
                 return;
             }
 
-            // это временно
-            try { guessWord = new Word(input); }
-            catch(ArgumentException ex)
+            inputCheckResult = StringNormalizer.Check(input);
+
+            if (inputCheckResult != null)
             {
-                _textWriter.WriteLine(ex.Message);
+                if (inputCheckResult == StringNormalizer.StringErrorStatus.InvalidLength)
+                    _textWriter.WriteLine("Некорректный ввод (несоответствующая длина)!");
+                else if (inputCheckResult == StringNormalizer.StringErrorStatus.InvalidStructure)
+                    _textWriter.WriteLine("Некорректный ввод (несоответствующая структура)!");
+                else if (inputCheckResult == StringNormalizer.StringErrorStatus.HasForbiddenSymbols)
+                    _textWriter.WriteLine("Некорректный ввод (запрещенные символы)!");
+
                 continue;
             }
-
-            /*if (guessResult.WordErrorStatus != null)
-            {
-                if (guessResult.WordErrorStatus == StringNormalizer.StringErrorStatus.InvalidLength)
-                    _textWriter.WriteLine($"Некорректный ввод (длина слова не соответствует {gameSession.Word.Length})!");
-                else if (guessResult.WordErrorStatus == StringNormalizer.StringErrorStatus.InvalidStructure)
-                    _textWriter.WriteLine("Некорректная структура ввода!");
-                else if (guessResult.WordErrorStatus == StringNormalizer.StringErrorStatus.HasForbiddenSymbols)
-                    _textWriter.WriteLine($"Некорректный ввод (запрещенные символы)!");
-
-                continue;
-            }*/
-
-        instant:
+            
+            guessWord = new Word(input);
             guessResult = WordleEngine.ApplyGuess(_gameSession, guessWord);
 
-            if (guessResult == null) // но этого не может быть        может быть второе условие
+            if (guessResult == null) // но этого не может быть сейчас
             {
-                if (!_gameSession.CheckStatus())
-                {
-                    _textWriter.WriteLine("Игра уже завершена, произошла ошибка!" +
-                                            $"Загаданное слово: '{_gameSession.Word.GetRevealed().Value}'\n");
-                    return;
-                }
-                else
-                {
+                _textWriter.WriteLine("Игра уже завершена, произошла ошибка!" +
+                                        $"Загаданное слово: '{_gameSession.Word.GetRevealed().Value}'\n");
+                return;
+            }
+
+            if (guessResult.ErrorStatus != null)
+            {
+                if (guessResult.ErrorStatus == GuessResult.GuessErrorStatus.InvalidLength)
                     _textWriter.WriteLine($"Некорректный ввод (длина слова не соответствует {_gameSession.Word.Length})!");
-                    continue;
-                }
+                else if (guessResult.ErrorStatus == GuessResult.GuessErrorStatus.NotInWordDictionary)
+                    _textWriter.WriteLine("Некорректный ввод (неизвестное слово)!");
+
+                continue;
             }
-
-            // 🟡✅❌
-            var guessWordMarked = Marker.GetMarked(_gameSession, guessWord);
-            string marks = "";
-
-            foreach (var mark in guessWordMarked!) // прощаю, длина уже проверена
-            {
-                if (mark.Equals(Marker.CharStatus.Correct))
-                    marks += "✅";
-                else if (mark.Equals(Marker.CharStatus.Incorrect))
-                    marks += "❌";
-                else if (mark.Equals(Marker.CharStatus.Present))
-                    marks += "🟡";
-            }
-
-            _textWriter.WriteLine(marks);
             
-            if (guessResult.Result)
+            ShowMarked(guessWord);
+
+            if (guessResult.Result != null && (bool) guessResult.Result)
             {
                 _textWriter.WriteLine("Игра завершена, победа!");
                 return;
@@ -132,19 +130,12 @@ public class ConsoleGame
     {
         if (_config.Word != null) // если было подано конкретное слово
         {
-            if (_config.MaxAttempts != null)
-                _gameSession = WordleEngine.StartGame(_config.Word, (int) _config.MaxAttempts);
-            else
-                _gameSession = WordleEngine.StartGame(_config.Word);
-            
+            _gameSession = WordleEngine.StartGame(_wordDictionary, _config.Word, _config.MaxAttempts);
             _config.Word = null; // забыто
         }
         else
         {
-            if (_config.MaxAttempts != null)
-                _gameSession = WordleEngine.StartGame(_wordDictionary, (int) _config.MaxAttempts);
-            else
-                _gameSession = WordleEngine.StartGame(_wordDictionary);
+            _gameSession = WordleEngine.StartGame(_wordDictionary, _config.MaxAttempts);
         }
 
         RunGameLoop();
@@ -225,17 +216,5 @@ public class ConsoleGame
                     break;
             }
         }
-    }
-    public void RunOnce()
-    {
-        if (_config.Word == null)
-        {
-            _textWriter.WriteLine("При использовании детерминированного режима необходимо указать аргумент '--word'.");
-            return;
-        }
-
-        _config.MaxAttempts = 1;
-
-        PlayOnce();
     }
 }

@@ -4,7 +4,7 @@ namespace Wordle.Core;
 
 public class Config
 {
-    private static List<string> _rawWords =
+    private readonly string[] _rawWords =
     [
         "арбуз",
         "банан",
@@ -57,20 +57,18 @@ public class Config
         "товар",
         "касса"
     ];
-    public static ReadOnlyCollection<string> RawWords { get { return _rawWords.AsReadOnly(); } }
-    public bool IsDetermined { get; set; } = false;
+    public ReadOnlyCollection<string> RawWords { get { return _rawWords.AsReadOnly(); } }
     public bool ShowArgumentParseExceptions { get; set; } = false;
     public bool ShowHelp { get; set; } = false;
-    public int? MaxAttempts { get; set; }
+    public int MaxAttempts { get; set; } = 5;
     public int? Seed { get; set; }
     public SecretWord? Word { get; set; }
-    public Word? InstantGuessWord { get; set; }
     public Config() {}
-    public Config(int maxAttempts, int seed, SecretWord word, Word instantGuessWord)
+    public Config(int maxAttempts, int seed, SecretWord word, IEnumerable<string> rawWords)
     {
         MaxAttempts = maxAttempts;
         Seed = seed;
         Word = word;
-        InstantGuessWord = instantGuessWord;
+        _rawWords = rawWords.ToArray();
     }
 }

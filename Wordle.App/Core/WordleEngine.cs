@@ -5,18 +5,23 @@ namespace Wordle.Core;
 public static class WordleEngine
 {
     public static WordRandomizer WordRandomizer { get; } = new WordRandomizer();
-    public static GameSession StartGame(WordDictionary wordDictionary, int maxAttempts = 5)
+    public static GameSession StartGame(WordDictionary wordDictionary, int maxAttempts)
     {
-        return new GameSession(new SecretWord(WordRandomizer.GetRandomWord(wordDictionary)), maxAttempts);
+        return new GameSession(new SecretWord(WordRandomizer.GetRandomWord(wordDictionary)), maxAttempts, wordDictionary);
     }
-    public static GameSession StartGame(AbstractWord word, int maxAttempts = 5)
+    public static GameSession StartGame(WordDictionary wordDictionary, AbstractWord word, int maxAttempts)
     {
-        return new GameSession(new SecretWord(word), maxAttempts);
+        return new GameSession(new SecretWord(word), maxAttempts, wordDictionary);
     }
     public static GuessResult? ApplyGuess(GameSession gameSession, Word guessWord)
     {   
-        if (!gameSession.CheckStatus() || !guessWord.CompareLength(gameSession.Word))
+        if (!gameSession.CheckStatus())
             return null;
+
+        if (!guessWord.CompareLength(gameSession.Word))
+            return new GuessResult(guessWord, GuessResult.GuessErrorStatus.InvalidLength);
+        else if (!gameSession.WordDictionary.Contains(guessWord))
+            return new GuessResult(guessWord, GuessResult.GuessErrorStatus.NotInWordDictionary);
 
         GuessResult guessResult;
         gameSession.Attempts++;

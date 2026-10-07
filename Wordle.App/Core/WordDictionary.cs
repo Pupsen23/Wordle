@@ -7,7 +7,6 @@ public class WordDictionary
     private List<Word> _words = [];
     public ReadOnlyCollection<Word> Words { get { return _words.AsReadOnly(); } }
     public int Length { get { return _words.Count; } }
-    public WordDictionary() {}
     /// <exception cref="ArgumentException"></exception>
     public WordDictionary(IEnumerable<string> rawWords, bool checkConsistence = false)
     {
@@ -66,8 +65,17 @@ public class WordDictionary
         }
 
         _words = tempWords;
-        //_words = words.ToList(); // копия или ссылка? ссылка :(
         
         return true;
+    }
+    public bool Contains(Word word)
+    {
+        foreach (Word innerWord in Words)
+        {
+            if (innerWord.CompareTo(word))
+                return true;
+        }
+
+        return false;
     }
 }

@@ -15,6 +15,7 @@ public class GameSession
     private List<Word> _history = [];
     public SecretWord Word { get; }
     public int MaxAttempts { get; }
+    public WordDictionary WordDictionary { get; }
     /// <exception cref="InvalidOperationException"></exception>
     /// <exception cref="ArgumentException"></exception>
     public int Attempts
@@ -44,13 +45,14 @@ public class GameSession
     }
     public ReadOnlyCollection<Word> History { get { return _history.AsReadOnly(); } }
     /// <exception cref="ArgumentException"></exception>
-    public GameSession(SecretWord word, int maxAttempts)
+    public GameSession(SecretWord word, int maxAttempts, WordDictionary wordDictionary)
     {
         if (maxAttempts <= 0)
             throw new ArgumentException($"Integer parameter 'MaxAttemptps' must be greater than 0 (received: {maxAttempts}).");
         
         Word = word;
         MaxAttempts = maxAttempts;
+        WordDictionary = wordDictionary;
     }
     public bool CheckAttempts() { return Attempts < MaxAttempts; }
     public bool CheckStatus() { return Status.Equals(GameStatus.InProgress); } // может CheckFinished?

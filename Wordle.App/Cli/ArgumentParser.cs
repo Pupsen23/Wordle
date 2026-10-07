@@ -1,3 +1,4 @@
+using Wordle.Cli.StringCollection;
 using Wordle.Core;
 using Wordle.Core.Words;
 
@@ -5,26 +6,18 @@ namespace Wordle.Cli
 {
     public class ArgumentParser
     {
-        public const string DeterminedArgName = "-d";
-        public const string ShowArgumentParseExceptionsArgName = "-s";
-        public const string ShowHelpArgName = "--help";
-        public const string MaxAttemptsArgName = "--max-attempts";
-        public const string SeedArgName = "--seed";
-        public const string WordArgName = "--word";
-        public const string InstantGuessWord = "--instant-guess-word";
         public static Config GetConfig(string[] args, out List<ArgumentException> argumentParseExceptions)
         {
             argumentParseExceptions = [];
             Config config = new Config()
             {
-                IsDetermined = args.Contains(DeterminedArgName),
-                ShowArgumentParseExceptions = args.Contains(ShowArgumentParseExceptionsArgName),
-                ShowHelp = args.Contains(ShowHelpArgName)
+                ShowArgumentParseExceptions = args.Contains(Arguments.ShowArgumentParseExceptions),
+                ShowHelp = args.Contains(Arguments.ShowHelp)
             };
 
             try
             {
-                string argValue = FindArgumentValue(args, MaxAttemptsArgName);
+                string argValue = FindArgumentValue(args, Arguments.MaxAttempts);
                 ConvertArgumentValue(argValue, out int convertedArgValue);
                 config.MaxAttempts = convertedArgValue;
             }
@@ -32,7 +25,7 @@ namespace Wordle.Cli
 
             try
             {
-                string argValue = FindArgumentValue(args, SeedArgName);
+                string argValue = FindArgumentValue(args, Arguments.Seed);
                 ConvertArgumentValue(argValue, out int convertedArgValue);
                 config.Seed = convertedArgValue;
             }
@@ -40,17 +33,9 @@ namespace Wordle.Cli
 
             try
             {
-                string argValue = FindArgumentValue(args, WordArgName);
+                string argValue = FindArgumentValue(args, Arguments.Word);
                 ConvertArgumentValue(argValue, out SecretWord convertedArgValue);
                 config.Word = convertedArgValue;
-            }
-            catch (ArgumentException ex) { argumentParseExceptions.Add(ex); }
-
-            try
-            {
-                string argValue = FindArgumentValue(args, InstantGuessWord);
-                ConvertArgumentValue(argValue, out Word convertedArgValue);
-                config.InstantGuessWord = convertedArgValue;
             }
             catch (ArgumentException ex) { argumentParseExceptions.Add(ex); }
 

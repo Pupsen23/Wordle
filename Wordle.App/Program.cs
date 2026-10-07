@@ -1,6 +1,7 @@
 ﻿using Wordle.Cli;
 using Wordle.Core;
-using Wordle.Cli.Messages;
+using Wordle.Cli.StringCollection;
+using Wordle.Core.Words;
 
 namespace Wordle;
 
@@ -10,28 +11,29 @@ public class Program
     {
         Config config = ArgumentParser.GetConfig(args, out List<ArgumentException> argumentParseExceptions);
 
-        if (config.ShowHelp) // временно
+        if (config.ShowHelp)
         {
-            Console.WriteLine(Help.Determined);
-            Console.WriteLine(Help.ShowArgumentParseExceptions);
-            Console.WriteLine(Help.MaxAttempts);
-            Console.WriteLine(Help.Seed);
-            Console.WriteLine(Help.Word);
-            Console.WriteLine(Help.InstantGuessWord);
+            foreach (string message in Help.All)
+                Console.WriteLine(message);
+
             return;
         }
 
-        if (config.ShowArgumentParseExceptions) // временно
+        if (config.ShowArgumentParseExceptions)
         {
             foreach (ArgumentException exception in argumentParseExceptions)
                 Console.WriteLine(exception.Message);
         }
+        
+        WordDictionary wordDictionary;
+        List<string> rawWords = config.RawWords.ToList();
 
-        ConsoleGame consoleGame = new ConsoleGame(Console.In, Console.Out, config, new WordDictionary(Config.RawWords));
+        if (config.Word != null)
+            rawWords.Add(new Word(config.Word).Value);
 
-        if (config.IsDetermined)
-            consoleGame.RunOnce();
-        else
-            consoleGame.Run();
+        wordDictionary = new WordDictionary(rawWords);
+            
+        ConsoleGame consoleGame = new ConsoleGame(Console.In, Console.Out, config, wordDictionary);
+        consoleGame.Run();
     }
 }
