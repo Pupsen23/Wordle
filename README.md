@@ -17,24 +17,25 @@
 
 ## 🏗️ Структура проекта
 
+```
 Wordle/
-├── Wordle.App/ # Основное консольное приложение
-│ ├── Cli/ # Логика командного интерфейса
-│ ├── Core/ # Ядро игры
-│ │ ├── Word/ # Работа со словами
-│ │ ├── Config.cs # Конфигурация игры
-│ │ ├── GameSession.cs # Игровая сессия
-│ │ ├── GuessResult.cs # Результат попытки
-│ │ ├── Marker.cs # Маркеры совпадений
-│ │ ├── StringNormalizer.cs # Нормализация строк
-│ │ ├── WordDictionary.cs # Словарь слов
-│ │ ├── WordRandomizer.cs # Случайный выбор слова
-│ │ └── WordleEngine.cs # Движок игры
-│ ├── Program.cs # Точка входа
-│ └── Wordle.App.csproj # Файл проекта
-├── Wordle.Tests/ # Модульные тесты
-└── Wordle.sln # Файл решения
-
+├── Wordle.App/              # Основное консольное приложение
+│   ├── Cli/                 # Логика командного интерфейса
+│   ├── Core/                # Ядро игры
+│   │   ├── Word/            # Работа со словами
+│   │   ├── Config.cs        # Конфигурация игры
+│   │   ├── GameSession.cs   # Игровая сессия
+│   │   ├── GuessResult.cs   # Результат попытки
+│   │   ├── Marker.cs        # Маркеры совпадений
+│   │   ├── StringNormalizer.cs  # Нормализация строк
+│   │   ├── WordDictionary.cs    # Словарь слов
+│   │   ├── WordRandomizer.cs    # Случайный выбор слова
+│   │   └── WordleEngine.cs      # Движок игры
+│   ├── Program.cs           # Точка входа
+│   └── Wordle.App.csproj    # Файл проекта
+├── Wordle.Tests/            # Модульные тесты
+└── Wordle.sln               # Файл решения
+```
 
 ## 🚀 Начало работы
 
@@ -48,5 +49,67 @@ Wordle/
    ```bash
    git clone https://github.com/Pupsen23/Wordle.git
    cd Wordle
+   ```
+
+2. **Соберите проект:**
+   ```bash
    dotnet build
+   ```
+
+3. **Запустите игру:**
+   ```bash
    dotnet run --project Wordle.App
+   ```
+
+### Аргументы командной строки
+
+Приложение поддерживает различные аргументы для настройки игры. Для просмотра доступных опций используйте:
+
+```bash
+dotnet run --project Wordle.App -- --help
+```
+
+Примеры использования:
+```bash
+# Запуск с указанием конкретного слова
+dotnet run --project Wordle.App -- --word APPLE
+
+# Запуск с пользовательским словарём
+dotnet run --project Wordle.App -- --dictionary path/to/words.txt
+```
+
+## 🧪 Тестирование
+
+Для запуска модульных тестов выполните:
+
+```bash
+dotnet test
+```
+
+## 🛠️ Технологии
+
+- **C#** — язык программирования
+- **.NET** — платформа разработки
+- **xUnit** — фреймворк для тестирования
+
+## 🤝 Вклад в проект
+
+Если вы хотите внести свой вклад в развитие проекта:
+
+1. Форкните репозиторий
+2. Создайте ветку для новой функции (`git checkout -b feature/AmazingFeature`)
+3. Зафиксируйте изменения (`git commit -m 'Add some AmazingFeature'`)
+4. Отправьте изменения в ветку (`git push origin feature/AmazingFeature`)
+5. Откройте Pull Request
+
+## 📄 Лицензия
+
+Лицензия не указана. Пожалуйста, свяжитесь с автором проекта для уточнения условий использования.
+
+## 👤 Автор
+
+**Pupsen23** — [GitHub](https://github.com/Pupsen23)
+
+---
+
+⭐ Если вам понравился проект, поставьте звезду на GitHub!
